@@ -10,7 +10,8 @@ func CheckAuth(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie("Token")
 	if err != nil {
 		fmt.Println(err )
-		w.WriteHeader(http.StatusUnauthorized)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 }

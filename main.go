@@ -30,7 +30,7 @@ func main() {
 	fmt.Println("http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
-func statichandler (w http.ResponseWriter, r *http.Request) {
+/* func statichandler (w http.ResponseWriter, r *http.Request) {
 	fmt.Println("dkhl")
 	src := r.URL.Path
 	file , err := os.Open("./"+src)
@@ -49,7 +49,7 @@ func statichandler (w http.ResponseWriter, r *http.Request) {
 		fmt.Println(src)
 		http.ServeFile(w, r, r.URL.Path[1:])
 	}
-}
+} */
 func homehandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	http.ServeFile(w, r, "index.html")
@@ -59,6 +59,7 @@ func apihandler(w http.ResponseWriter, r *http.Request) {
 	url := strings.Split(r.URL.Path, "/")
 	switch url[2] {
 	case "auth":
+		fmt.Println("dkh")
 		Auth.Auth(w, r)
 	case "getPost":
 		Posts.Getpost(w, r)
