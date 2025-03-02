@@ -7,7 +7,7 @@ import (
 
 func Auth(w http.ResponseWriter, r *http.Request) {
 	url := strings.Split(r.URL.Path, "/")
-	switch url[2] {
+	switch url[3] {
 	case "login":
 		LogUser(w, r)
 	case "register":
