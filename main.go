@@ -23,6 +23,8 @@ func main() {
 	}
 	CreateTables(forumDB)
 	defer forumDB.Close()
+
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/api/", apihandler)
 	http.HandleFunc("/", homehandler)
@@ -30,30 +32,14 @@ func main() {
 	fmt.Println("http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
-/* func statichandler (w http.ResponseWriter, r *http.Request) {
-	fmt.Println("dkhl")
-	src := r.URL.Path
-	file , err := os.Open("./"+src)
-	if err !=  nil {
-		fmt.Println(err)
-		return
-	}
-	fileinfo , _ := file.Stat()
-	if(fileinfo.IsDir()) {
-		//fmt.Println("dir")
-		 w.WriteHeader(http.StatusNotAcceptable)
-		 w.Write([]byte("skj"))
-	}else {
-		fmt.Println("not dir")
-		w.WriteHeader(http.StatusOK)
-		fmt.Println(src)
-		http.ServeFile(w, r, r.URL.Path[1:])
-	}
-} */
+
 func homehandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	http.ServeFile(w, r, "index.html")
 }
+
+
+
 
 func apihandler(w http.ResponseWriter, r *http.Request) {
 	url := strings.Split(r.URL.Path, "/")
