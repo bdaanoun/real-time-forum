@@ -7,7 +7,35 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI';
+  }
+
+  .Btnscontainer{
+    display: flex;
+    border-radius: 16px;
+    background-color: #101218;
+
+  }
+  .inputsContainer{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+  }
+  .loginBtn, .registerBtn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 8px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+    text-align: center;
+  }
+  .active {
+    background-color: #333;
+    
   }
   
   .loginPlace {
@@ -26,24 +54,6 @@ body {
     height: 40px;
   }
   
-  .loginBtn, .registerBtn {
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 20px;
-    margin: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .registerBtn {
-    background-color: #333;
-  }
-  
-  .loginBtn:hover, .registerBtn:hover {
-    opacity: 0.9;
-  }
   
   label {
     align-self: flex-start;
@@ -83,13 +93,3 @@ body {
     align-self: center;
   }
   
-  .cancel {
-    background-color: transparent;
-    border: 1px solid #666;
-    color: white;
-    border-radius: 5px;
-    padding: 12px 30px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-weight: bold;
-  }
