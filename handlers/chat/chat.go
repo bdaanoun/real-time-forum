@@ -24,7 +24,7 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(msg)
+		fmt.Println(string(msg))
 		err = conn.WriteMessage(msgt, msg)
 		if err != nil {
 			fmt.Println("Error writing message:", err)
