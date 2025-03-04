@@ -9,7 +9,7 @@ import (
 
 	Auth "real-time-forum/handlers/auth"
 	Posts "real-time-forum/handlers/posts"
-
+	Chat "real-time-forum/handlers/chat"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -23,9 +23,8 @@ func main() {
 	}
 	CreateTables(forumDB)
 	defer forumDB.Close()
-
-
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/chat" , Chat.ChatHandler)
 	http.HandleFunc("/api/", apihandler)
 	http.HandleFunc("/", homehandler)
 
