@@ -1,4 +1,4 @@
-export default function createDiv(className, textContent) {
+export default function Div(className, textContent) {
     let ele = document.createElement('div')
     ele.className = className
     ele.textContent = textContent
