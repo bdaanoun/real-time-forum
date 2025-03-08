@@ -33,6 +33,7 @@ func main() {
 }
 
 func homehandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("here")
 	w.WriteHeader(http.StatusOK)
 	http.ServeFile(w, r, "index.html")
 }
