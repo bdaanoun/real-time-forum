@@ -1,95 +1,129 @@
 body {
-    background-color: #1a1a2e;
-    background-image: linear-gradient(45deg, #1a1a2e 25%, #16213e 25%, #16213e 50%, #1a1a2e 50%, #1a1a2e 75%, #16213e 75%, #16213e 100%);
-    background-size: 100px 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Segoe UI';
-  }
+  background-color: #1a1a2e;
+  background-image: linear-gradient(45deg, #1a1a2e 25%, #16213e 25%, #16213e 50%, #1a1a2e 50%, #1a1a2e 75%, #16213e 75%, #16213e 100%);
+  background-size: 100px 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI';
+}
 
-  .Btnscontainer{
-    display: flex;
-    border-radius: 16px;
-    background-color: #101218;
+.Btnscontainer {
+  margin-bottom: 20px;
+  display: flex;
+  border-radius: 16px;
+  background-color: #101218;
 
-  }
-  .inputsContainer{
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-  }
-  .loginBtn, .registerBtn {
-    background-color: transparent;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 8px 20px;
-    margin: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    display: inline-block;
-    text-align: center;
-  }
-  .active {
-    background-color: #333;
-    
-  }
-  
-  .loginPlace {
-    background-color: #222;
-    border-radius: 15px;
-    padding: 30px;
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  }
-  
-  .logo {
-    margin-bottom: 20px;
-    height: 40px;
-  }
-  
-  
-  label {
-    align-self: flex-start;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: white;
-    font-size: 14px;
-    text-transform: capitalize;
-  }
-  
-  input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: none;
-    background-color: #333;
-    color: white;
-    box-sizing: border-box;
-    font-size: 14px;
-  }
-  
-  input::placeholder {
-    color: #777;
-  }
-  
-  /* Additional styles for the login button at the bottom as seen in image */
-  .loginSubmit {
-    background-color: #ff6347;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 12px 30px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    align-self: center;
-  }
-  
+}
+.FI_LA_names{
+  display: flex;
+  gap: 10px;
+}
+
+.inputsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
+.loginBtn,
+.registerBtn {
+  background-color: transparent;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 8px 20px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+}
+
+.active {
+  background-color: #333;
+
+}
+
+.loginPlace, .registerPlace {
+  margin: 20px;
+  background-color: #222;
+  border-radius: 15px;
+  padding: 30px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+  margin-bottom: 20px;
+  height: 40px;
+}
+
+
+label {
+  align-self: flex-start;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: white;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #333;
+  color: white;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+input::placeholder {
+  color: #777;
+}
+
+/* Additional styles for the login button at the bottom as seen in image */
+.loginSubmit {
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 30px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: center;
+}
+
+/* .age_gender {
+  display: flex;
+  flex-direction: row;
+} */
+
+.gender{
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #333;
+  color: white;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.age_gender {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+
