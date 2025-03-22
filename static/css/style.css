@@ -1,95 +1,145 @@
-body {
-    background-color: #1a1a2e;
-    background-image: linear-gradient(45deg, #1a1a2e 25%, #16213e 25%, #16213e 50%, #1a1a2e 50%, #1a1a2e 75%, #16213e 75%, #16213e 100%);
-    background-size: 100px 100px;
+.form {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 350px;
+    padding: 20px;
+    border-radius: 20px;
+    position: relative;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #333;
+  }
+  body {
     height: 100vh;
     margin: 0;
-    font-family: 'Segoe UI';
-  }
-
-  .Btnscontainer{
     display: flex;
-    border-radius: 16px;
-    background-color: #101218;
+    justify-content: center;  /* Horizontally center the content */
+    align-items: center;  /* Vertically center the content */
+}
 
-  }
-  .inputsContainer{
+
+  .title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    position: relative;
     display: flex;
-    flex-direction: column;
-    width: 90%;
+    align-items: center;
+    padding-left: 30px;
+    color: #00bfff;
   }
-  .loginBtn, .registerBtn {
-    background-color: transparent;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 8px 20px;
-    margin: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    display: inline-block;
+  
+  .title::before {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .title::after {
+    width: 18px;
+    height: 18px;
+    animation: pulse 1s linear infinite;
+  }
+  
+  .title::before,
+  .title::after {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    left: 0px;
+    background-color: #00bfff;
+  }
+  
+  .message, 
+  .signin {
+    font-size: 14.5px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .signin {
     text-align: center;
   }
-  .active {
-    background-color: #333;
-    
+  
+  .signin a:hover {
+    text-decoration: underline royalblue;
   }
   
-  .loginPlace {
-    background-color: #222;
-    border-radius: 15px;
-    padding: 30px;
-    width: 300px;
+  .signin a {
+    color: #00bfff;
+  }
+  
+  .flex {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  }
-  
-  .logo {
-    margin-bottom: 20px;
-    height: 40px;
-  }
-  
-  
-  label {
-    align-self: flex-start;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: white;
-    font-size: 14px;
-    text-transform: capitalize;
-  }
-  
-  input {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: none;
+    gap: 6px;
+  }
+  
+  .form label {
+    position: relative;
+  }
+  
+  .form label .input {
     background-color: #333;
-    color: white;
-    box-sizing: border-box;
-    font-size: 14px;
+    color: #fff;
+    width: 100%;
+    padding: 20px 05px 05px 10px;
+    outline: 0;
+    border: 1px solid rgba(105, 105, 105, 0.397);
+    border-radius: 10px;
   }
   
-  input::placeholder {
-    color: #777;
+  .form label .input + span {
+    color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    font-size: 0.9em;
+    cursor: text;
+    transition: 0.3s ease;
   }
   
-  /* Additional styles for the login button at the bottom as seen in image */
-  .loginSubmit {
-    background-color: #ff6347;
-    color: white;
+  .form label .input:placeholder-shown + span {
+    top: 12.5px;
+    font-size: 0.9em;
+  }
+  
+  .form label .input:focus + span,
+  .form label .input:valid + span {
+    color: #00bfff;
+    top: 0px;
+    font-size: 0.7em;
+    font-weight: 600;
+  }
+  
+  .input {
+    font-size: medium;
+  }
+  
+  .submit {
     border: none;
-    border-radius: 5px;
-    padding: 12px 30px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    align-self: center;
+    outline: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    transform: .3s ease;
+    background-color: #00bfff;
   }
   
+  .submit:hover {
+    background-color: #00bfff96;    
+  }
+  
+  @keyframes pulse {
+    from {
+      transform: scale(0.9);
+      opacity: 1;
+    }
+  
+    to {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }

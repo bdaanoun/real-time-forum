@@ -2,65 +2,62 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"os"
-	"strings"
+	"os/signal"
+	"syscall"
 
-	Auth "real-time-forum/handlers/auth"
-	Posts "real-time-forum/handlers/posts"
-	Chat "real-time-forum/handlers/chat"
+	"forum/app/api"
+	"forum/app/config"
+	"forum/app/handlers"
+	"forum/app/modules/log"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	forumDB, err := sql.Open("sqlite3", "./forum.db")
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal("error opening database:", err)
+	}
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+	defer signal.Stop(sigChan)
+
+	defer func() {
+		err = forumDB.Close()
+		if err != nil {
+			log.Error("error closinging database:", err)
+		} else {
+			log.Info("database closed successfully")
+		}
+	}()
+
+	err = config.CreateTables(forumDB)
+	if err != nil {
+		log.Fatal("error creating tables:", err)
+	}
+
+	http.HandleFunc("/static/", handlers.Static)
+	http.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) { api.Router(w, r, forumDB) })
+	http.HandleFunc("/", handlers.Home)
+
+	server := &http.Server{Addr: ":8080"}
+
+	go func() {
+		log.Info("server started: http://localhost:8080")
+		err = server.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			log.Error("error starting server:", err)
+			sigChan <- syscall.SIGTERM
+		}
+	}()
+
+	log.Info("shuting down the server", <-sigChan)
+	err = server.Close()
+	if err != nil {
+		log.Error("error shuthing dowm the server:", err)
 	} else {
-		fmt.Println("success")
-	}
-	CreateTables(forumDB)
-	defer forumDB.Close()
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/chat" , Chat.ChatHandler)
-	http.HandleFunc("/api/", apihandler)
-	http.HandleFunc("/", homehandler)
-
-	fmt.Println("http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
-}
-
-func homehandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("here")
-	w.WriteHeader(http.StatusOK)
-	http.ServeFile(w, r, "index.html")
-}
-
-
-
-
-func apihandler(w http.ResponseWriter, r *http.Request) {
-	url := strings.Split(r.URL.Path, "/")
-	switch url[2] {
-	case "auth":
-		fmt.Println("dkh")
-		Auth.Auth(w, r)
-	case "getPost":
-		Posts.Getpost(w, r)
-	case "setPost":
-		Posts.SetPost(w, r)
-	}
-}
-
-func CreateTables(forumDB *sql.DB)  {
-	script , err :=  os.ReadFile("./schema.sql")
-	if err != nil {
-		fmt.Println(err)
-	}
-	res , err := forumDB.Exec(string(script))
-	if err != nil {
-		fmt.Println(err , res)
+		log.Info("server shutdown successfully")
 	}
 }

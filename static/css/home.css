@@ -1,0 +1,21 @@
+@import url("./post.css");
+@import url("./postView.css");
+@import url("./auth.css");
+@import url("./createPostForm.css");
+@import url("./categories.css");
+
+.homePage {
+  display: flex;
+  flex-direction: column;
+  gap: 39px;
+  padding: 10vh 0;
+}
+
+.posts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 100%;
+  align-items: center;
+}
