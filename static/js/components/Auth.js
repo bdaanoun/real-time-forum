@@ -42,7 +42,7 @@ const createRegisterForm = (authElement, context) => {
     const errors = [
       validateUsername(username.value, context()),
       validateEmail(email.value, context() === "register"),
-      validatePassword(password.value,confirmPassword.value, context() === "register"),
+      validatePassword(password.value, confirmPassword.value, context() === "register"),
     ].filter((value) => value);
 
     if (errors.length > 0) {
@@ -168,7 +168,7 @@ const Auth = (authType) => {
     changeContext(registerForm);
   }
 
-  return authElement.add(
+  document.body.append(authElement.add(
     div("full-screen-background"),
     div("blur-layer"),
     authentication.add(
@@ -178,7 +178,7 @@ const Auth = (authType) => {
         div("register").add(registerForm.form)
       )
     )
-  );
+  ));
 };
 
 export default Auth;

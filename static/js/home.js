@@ -1,13 +1,16 @@
-import { InfinitePosts } from "./components/InfinitePosts.js";
 import div from "./components/native/div.js";
-import { PostCreationBar } from "./components/createPost.js";
-import { FilterSearch } from "./components/filter.js";
+// import { InfinitePosts } from "./components/InfinitePosts.js";
+// import { PostCreationBar } from "./components/createPost.js";
+// import { FilterSearch } from "./components/filter.js";
 
-export const Home = () => {
+export default function Home() {
   document.querySelector(".icon.home")?.classList.add("active");
-  return div("homePage").add(
-    PostCreationBar(),
-    FilterSearch(),
-    InfinitePosts("api/posts")
+  let homePage = div("homePage").add(
+    // PostCreationBar(),
+    // FilterSearch(),
+    // InfinitePosts("api/posts")
+
   );
+  console.log('hello');
+return homePage
 };

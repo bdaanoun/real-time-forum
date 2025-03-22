@@ -2,6 +2,7 @@ package reactions
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"forum/app/modules"
@@ -49,6 +50,7 @@ func AddReaction(conn *modules.Connection, forumDB *sql.DB) {
 		log.Error(err)
 		if sqliteErr, ok := err.(sqlite3.Error); ok {
 			if sqliteErr.ExtendedCode == sqlite3.ErrConstraintNotNull {
+				fmt.Println("exErr", sqliteErr.ExtendedCode)
 				conn.Error(errors.BadRequestError("invalid reaction type"))
 				return
 			}
