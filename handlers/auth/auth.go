@@ -1,22 +1,21 @@
 package auth
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strings"
 )
 
-func Auth(w http.ResponseWriter, r *http.Request) {
+func Auth(db *sql.DB, w http.ResponseWriter, r *http.Request) {
 	url := strings.Split(r.URL.Path, "/")
-	fmt.Println("url3", url[3])
-
 	switch url[3] {
 	case "login":
 		fmt.Println("/login")
 		LogUser(w, r)
 	case "register":
-		RegisterUser(w, r)
 		fmt.Println("/register")
+		RegisterUser(db, w, r)
 	case "checkAUth":
 		fmt.Println("/check")
 		CheckAuth(w, r)

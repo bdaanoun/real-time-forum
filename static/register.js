@@ -59,6 +59,7 @@ export default function register() {
     registerSubmitBtn.addEventListener('click', (e) => {
         e.preventDefault();
         fetchNewUser()
+        
     });
 
     inputsContainer.append(Nickname, age_gender, FI_LA_names, email, password, registerSubmitBtn);
@@ -76,16 +77,16 @@ async function fetchNewUser() {
     const LastnameValue = document.getElementById('Lastname').value;
     const emailValue = document.getElementById('email').value;
     const passwordValue = document.getElementById('password').value;
-    let res = await fetch('/api/auth/register', {
+    await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            Nickname: NicknameValue,
+            nickname: NicknameValue,
             age: ageValue,
             gender: genderValue,
-            Firstname: FirstnameValue,
+            firstname: FirstnameValue,
             Lastname: LastnameValue,
             email: emailValue,
             password: passwordValue,
