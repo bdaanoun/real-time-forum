@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	Post"forum/handlers/posts"
 	"forum/handlers"
 	"forum/handlers/auth"
 
@@ -22,6 +23,7 @@ func setupHandlers() {
 	// http.HandleFunc("/CreatePost", Post.CreatPostHandler)
 	// http.HandleFunc("/GetPosts", Post.GetPostsHandler)
 	// http.HandleFunc("/GetPost", Post.GetPostHandler)
+	http.HandleFunc("/SetPost", Post.SetPost)
 	// http.HandleFunc("/GetComments", Comment.GetCommentsHandler)
 	// http.HandleFunc("/SetComment", Comment.SetCommentHandler)
 	// http.HandleFunc("/like", Reactions.LikeHandler)
