@@ -8,16 +8,15 @@ import (
 	dataBase "forum/handlers/dataBase"
 )
 
-// DB is your database connection (set this somewhere in your main package)
-
 type PostRequest struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	UserID  int    `json:"user_id"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	UserID     int    `json:"user_id"`
+	Categories []int  `json:"categories"`
 }
 
 func SetPost(w http.ResponseWriter, r *http.Request) {
-	var db = dataBase.ForumDB
+	db := dataBase.ForumDB
 
 	// Ensure it's a POST request
 	if r.Method != http.MethodPost {
@@ -40,10 +39,23 @@ func SetPost(w http.ResponseWriter, r *http.Request) {
 
 	// Insert post into DB
 	query := `INSERT INTO posts (title, content, user_id, created_at) VALUES (?, ?, ?, ?)`
-	_, err := db.Exec(query, req.Title, req.Content, req.UserID, time.Now())
+	result, err := db.Exec(query, req.Title, req.Content, req.UserID, time.Now())
 	if err != nil {
 		http.Error(w, "Failed to create post", http.StatusInternalServerError)
 		return
+	}
+
+	postID, err := result.LastInsertId()
+	if err != nil {
+		http.Error(w, "Failed to retrieve post ID", http.StatusInternalServerError)
+		return
+	}
+	for _, categoryID := range req.Categories {
+		_, err := db.Exec(`INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)`, postID, categoryID)
+		if err != nil {
+			http.Error(w, "failed to inset categories", http.StatusInternalServerError)
+		}
+
 	}
 
 	// Respond with success
