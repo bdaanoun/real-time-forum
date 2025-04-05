@@ -12,6 +12,7 @@ import (
 )
 
 type User struct {
+	ID        int    `json:"id"`
 	Nickname  string `json:"nickname"`
 	Age       string `json:"age"`
 	Gender    string `json:"gender"`

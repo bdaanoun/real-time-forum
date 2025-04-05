@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nickname TEXT UNIQUE NOT NULL,
     age INTEGER NOT NULL,
@@ -12,19 +12,20 @@ CREATE TABLE users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL
 );
 
-INSERT INTO categories (name) VALUES 
+INSERT OR IGNORE INTO categories (name) VALUES 
 ('sport'), 
 ('tech'),
 ('art'),
 ('health'),
 ('nature');
 
-CREATE TABLE posts (
+
+CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
@@ -32,13 +33,13 @@ CREATE TABLE posts (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE post_categories (
+CREATE TABLE IF NOT EXISTS post_categories (
     post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     PRIMARY KEY (post_id, category_id)
 );
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -46,15 +47,15 @@ CREATE TABLE comments (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE post_likes (
+CREATE TABLE IF NOT EXISTS post_likes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    reaction_type INTEGER NOT NULL CHECK (reaction_type IN (-1, 0, 1)),  -- 1 = like, -1 = dislike, 0 = neutral (not shown)
+    reaction_type INTEGER NOT NULL CHECK (reaction_type IN (-1, 0, 1)),
     UNIQUE(post_id, user_id)
 );
 
-CREATE TABLE comment_likes (
+CREATE TABLE IF NOT EXISTS comment_likes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     comment_id INTEGER NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -62,7 +63,7 @@ CREATE TABLE comment_likes (
     UNIQUE(comment_id, user_id)
 );
 
-CREATE TABLE messages (
+CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -70,11 +71,13 @@ CREATE TABLE messages (
     sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE user_active_status (
+CREATE TABLE IF NOT EXISTS user_active_status (
     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1))
 );
-CREATE TABLE sessions (
+
+CREATE TABLE IF NOT EXISTS sessions (
     id TEXT PRIMARY KEY,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     expires_at TIMESTAMP NOT NULL
-);  
+);

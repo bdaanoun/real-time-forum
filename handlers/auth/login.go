@@ -37,7 +37,7 @@ func LogUser(w http.ResponseWriter, r *http.Request) {
 	var user User
 	query := `SELECT id, nickname, age, gender, first_name, last_name, email, password_hash FROM users WHERE email = ?`
 	row := db.QueryRow(query, loginRequest.Email)
-	err := row.Scan(&user.ID, &user.Nickname, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.PasswordHash)
+	err := row.Scan(&user.ID, &user.Nickname, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "User not found", http.StatusUnauthorized)
@@ -46,9 +46,12 @@ func LogUser(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+	fmt.Println("user", user)
 
 	// Compare the provided password with the stored hash
-	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(loginRequest.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginRequest.Password))
+	fmt.Println("hs", user.Password, loginRequest.Password)
+
 	if err != nil {
 		http.Error(w, "Invalid password", http.StatusUnauthorized)
 		return
