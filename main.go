@@ -2,62 +2,48 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 
-	"forum/app/api"
 	"forum/app/config"
-	"forum/app/handlers"
-	"forum/app/modules/log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func main() {
-	forumDB, err := sql.Open("sqlite3", "./forum.db")
+var forumDB *sql.DB
+
+func dbInit() {
+	var err error
+	forumDB, err = sql.Open("sqlite3", "./forum.db")
 	if err != nil {
-		log.Fatal("error opening database:", err)
-	}
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-	defer signal.Stop(sigChan)
-
-	defer func() {
-		err = forumDB.Close()
-		if err != nil {
-			log.Error("error closinging database:", err)
-		} else {
-			log.Info("database closed successfully")
-		}
-	}()
-
-	err = config.CreateTables(forumDB)
-	if err != nil {
-		log.Fatal("error creating tables:", err)
-	}
-
-	http.HandleFunc("/static/", handlers.Static)
-	http.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) { api.Router(w, r, forumDB) })
-	http.HandleFunc("/", handlers.Home)
-
-	server := &http.Server{Addr: ":8080"}
-
-	go func() {
-		log.Info("server started: http://localhost:8080")
-		err = server.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
-			log.Error("error starting server:", err)
-			sigChan <- syscall.SIGTERM
-		}
-	}()
-
-	log.Info("shuting down the server", <-sigChan)
-	err = server.Close()
-	if err != nil {
-		log.Error("error shuthing dowm the server:", err)
+		fmt.Println(err)
+		return
 	} else {
-		log.Info("server shutdown successfully")
+		fmt.Println("success")
 	}
+	config.CreateTables(forumDB)
+}
+
+func setupHandlers() {
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/", Homehandler)
+	http.HandleFunc("/register", RegisterHanler)
+	http.HandleFunc("/login", LoginHandler)
+	http.HandleFunc("/chat", Chat.ChatHandler)
+	http.HandleFunc("/CreatePost", Post.CreatPostHandler)
+	http.HandleFunc("/GetPosts", Post.GetPostsHandler)
+	http.HandleFunc("/GetPost", Post.GetPostHandler)
+	http.HandleFunc("/GetComments", Comment.GetCommentsHandler)
+	http.HandleFunc("/SetComment", Comment.SetCommentHandler)
+	http.HandleFunc("/like", Reactions.LikeHandler)
+	http.HandleFunc("/dislike", Reractions.DislikeHandler)
+	http.HandleFunc("/Profile", ProfileHandler)
+	http.HandleFunc("/CheckAuth", CheckAuthHandler)
+}
+
+func main() {
+	dbInit()
+	setupHandlers()
+	fmt.Println("http://localhost:8080")
+	http.ListenAndServe(":8080", nil)
 }
