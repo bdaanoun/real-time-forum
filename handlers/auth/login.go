@@ -97,33 +97,3 @@ func CreateSession(db *sql.DB, userID int) (string, time.Time, error) {
 
 	return sessionID, expiration, nil
 }
-
-// ValidateSession checks the session's validity and retrieves the associated user ID
-func ValidateSession(db *sql.DB, r *http.Request) (int, error) {
-	// Get session cookie
-	cookie, err := r.Cookie("session_id")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			return 0, fmt.Errorf("no session cookie")
-		}
-		return 0, fmt.Errorf("error reading session cookie: %v", err)
-	}
-
-	// Get session info from DB
-	sessionID := cookie.Value
-	var userID int
-	var expiresAt time.Time
-	query := `SELECT user_id, expires_at FROM sessions WHERE id = ?`
-	err = db.QueryRow(query, sessionID).Scan(&userID, &expiresAt)
-	if err != nil {
-		return 0, fmt.Errorf("session not found: %v", err)
-	}
-
-	// Check if session has expired
-	if time.Now().After(expiresAt) {
-		return 0, fmt.Errorf("session expired")
-	}
-
-	// Return user ID for authenticated user
-	return userID, nil
-}
