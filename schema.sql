@@ -1,0 +1,80 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nickname TEXT UNIQUE NOT NULL,
+    age INTEGER NOT NULL,
+    gender TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL
+);
+
+INSERT INTO categories (name) VALUES 
+('sport'), 
+('tech'),
+('art'),
+('health'),
+('nature');
+
+CREATE TABLE posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE post_categories (
+    post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+    PRIMARY KEY (post_id, category_id)
+);
+
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE post_likes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    reaction_type INTEGER NOT NULL CHECK (reaction_type IN (-1, 0, 1)),  -- 1 = like, -1 = dislike, 0 = neutral (not shown)
+    UNIQUE(post_id, user_id)
+);
+
+CREATE TABLE comment_likes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    comment_id INTEGER NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    is_like INTEGER NOT NULL CHECK (is_like IN (0, 1)),
+    UNIQUE(comment_id, user_id)
+);
+
+CREATE TABLE messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_active_status (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+);
+CREATE TABLE sessions (
+    id TEXT PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    expires_at TIMESTAMP NOT NULL
+);  

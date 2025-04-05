@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"database/sql"
@@ -16,6 +16,6 @@ func CreateTables(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-
+	
 	return nil
 }
