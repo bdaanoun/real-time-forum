@@ -5,6 +5,7 @@ import (
 	database "forum/handlers/dataBase"
 	"net/http"
 	"time"
+	auth"forum/handlers/auth"
 )
 
 type CommentRequest struct {
@@ -24,8 +25,7 @@ func SetComment(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	ValidateSession
-	userID, err := ValidateSession(r)
+	userID, err := auth.ValidateSession(r , database.ForumDB)
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
