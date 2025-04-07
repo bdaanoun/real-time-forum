@@ -37,7 +37,6 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 	for commentRows.Next() {
 		var commentContent, commentFirstName, commentLastName string
 		var createdAt string
-
 		err := commentRows.Scan(&commentContent, &commentFirstName, &commentLastName, &createdAt)
 		if err != nil {
 			log.Println("Error scanning comment:", err)
