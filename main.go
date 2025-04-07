@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	Post"forum/handlers/posts"
 	"forum/handlers"
 	"forum/handlers/auth"
+	Post "forum/handlers/posts"
 
 	// "forum/handlers/chat"
 	database "forum/handlers/dataBase"
@@ -29,7 +29,7 @@ func setupHandlers() {
 	// http.HandleFunc("/like", Reactions.LikeHandler)
 	// http.HandleFunc("/dislike", Reractions.DislikeHandler)
 	// http.HandleFunc("/Profile", ProfileHandler)
-	// http.HandleFunc("/CheckAuth", CheckAuthHandler)
+	http.HandleFunc("/CheckAuth", auth.CheckAuth)
 }
 
 func main() {

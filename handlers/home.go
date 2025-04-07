@@ -1,8 +1,11 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	http.ServeFile(w, r, "index.html")
+	// w.WriteHeader(http.StatusOK)
+	// fmt.Println("hell")
+	http.ServeFile(w, r, "static/index.html")
 }

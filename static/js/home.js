@@ -4,13 +4,13 @@ import div from "./components/native/div.js";
 // import { FilterSearch } from "./components/filter.js";
 
 export default function Home() {
-  document.querySelector(".icon.home")?.classList.add("active");
-  let homePage = div("homePage").add(
-    // PostCreationBar(),
-    // FilterSearch(),
-    // InfinitePosts("api/posts")
+  let body = document.querySelector("#backdrop")
+  let homePage = div("homePage")
 
-  );
+
+  
+  homePage.textContent = "welcome Home"
+  body.append(homePage)
   console.log('hello');
-return homePage
+  return homePage
 };

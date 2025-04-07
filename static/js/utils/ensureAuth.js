@@ -14,11 +14,13 @@ export const changeAuthState = (state = null) => {
   }
 };
 
-export const ensureAuth = (force) => {
-  if (force && !isAuthenticated) {
-    go("/login", true);
-  }
-  return isAuthenticated;
+export const ensureAuth = async () => {
+  let res = await fetch("/checkAuth")
+  // let resp = res.json()
+  
+  return res.ok
+    
+
 };
 
 export default ensureAuth;
