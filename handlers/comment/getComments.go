@@ -9,7 +9,7 @@ import (
 	dataB "forum/handlers/dataBase"
 )
 
-func GetComments(w http.ResponseWriter, r *http.Request) {
+func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 	postIDStr := r.URL.Query().Get("post_id")
 	if postIDStr == "" {
 		http.Error(w, "Missing post_id query parameter", http.StatusBadRequest)

@@ -13,7 +13,7 @@ type CommentRequest struct {
 	Content string `json:"content"`
 }
 
-func SetComment(w http.ResponseWriter, r *http.Request) {
+func SetCommentHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

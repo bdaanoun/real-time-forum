@@ -12,7 +12,7 @@ import (
 	dataB "forum/handlers/dataBase"
 )
 
-func GetPosts(w http.ResponseWriter, r *http.Request) {
+func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	offset := r.URL.Query().Get("offset")
 	if offset == "" {
 		offset = "0"

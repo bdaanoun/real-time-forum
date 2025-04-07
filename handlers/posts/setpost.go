@@ -15,7 +15,7 @@ type PostRequest struct {
 	Categories []int  `json:"categories"`
 }
 
-func SetPost(w http.ResponseWriter, r *http.Request) {
+func SetPostHandler(w http.ResponseWriter, r *http.Request) {
 	db := dataBase.ForumDB
 
 	// Ensure it's a POST request
