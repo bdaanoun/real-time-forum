@@ -1,3 +1,4 @@
+import CreatePost from "./components/createPost.js";
 import Home from "./home.js";
 import login from "./login.js";
 import register from "./register.js";
@@ -38,6 +39,9 @@ async function route() {
         case "/":
             Home()
             break;
+        case "/create-post" :
+            document.body.append(CreatePost())
+            break
         case "/login":
             Home()
             break;

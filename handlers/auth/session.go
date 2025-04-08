@@ -12,12 +12,14 @@ import (
 func CheckAuth(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("here")
 	id, err := ValidateSession(r, dataB.ForumDB)
-	fmt.Println(id  , err)
+	fmt.Println(id, err)
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+	fmt.Println(id)
+	w.Write([]byte(fmt.Sprintf("%d", id)))
 }
 
 func ValidateSession(r *http.Request, db *sql.DB) (int, error) {

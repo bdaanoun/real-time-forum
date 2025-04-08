@@ -1,4 +1,5 @@
 import div from "./components/native/div.js";
+import navigateTo from "./main.js";
 
 const trimSlash = (str) => {
   if (str[0] === "/") {
@@ -116,7 +117,7 @@ export const go = (route, popup, ...args) => {
 
 export const back = () => {
   if (!history.state.prev) {
-    go("/");
+    navigateTo("/");
   } else {
     history.back();
   }
