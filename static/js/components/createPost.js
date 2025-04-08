@@ -21,9 +21,10 @@ export const PostCreationBar = () => {
   );
 };
 
-export async function CreatePost() {
-  console.log("in");
 
+
+
+export async function CreatePost() {
   const postCreateView = div("postCreateView")
   postCreateView.onclick = (e) => {
     if (e.target === postCreateView) {
@@ -31,30 +32,13 @@ export async function CreatePost() {
       back();
     }
   };
-
   const titleInput = input("text", "Title");
-  // titleInput.className = "titleInput";
-  // titleInput.type = "text";
-  // titleInput.placeholder = "Enter title";
-  // titleInput.id = "titleInput";
-
   const textInput = textarea("Content");
-  // textInput.className = "textInput";
-  // textInput.placeholder = "Enter text";
-  // textInput.id = "textInput";
-
-  // const imageInput = document.createElement("input");
-  // imageInput.className = "imageInput";
-  // imageInput.type = "file";
-  // imageInput.id = "imageInput";
-
   const categoryDiv = div("categ");
-
   const categories = ["Technology", "Sport", "Finance", "Science"];
   categories.forEach((cat) => {
     const checkboxLabel = document.createElement("label");
     checkboxLabel.className = "category-label";
-
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.value = cat;
@@ -65,45 +49,22 @@ export async function CreatePost() {
   });
 
   const submitButton = button("Create a Post", async () => { await CreatePostFetch(titleInput, textInput) });
-  // submitButton.className = "submitButton";
-  // submitButton.textContent = "Create a Post";
-  // submitButton.onclick = async () => {
-
   const cancelButton = button("Cancel", () => { document.querySelector(".postForm").remove() });
-  // const cancelButton = document.createElement("button");
-  // cancelButton.className = "cancelButton secondary";
-  // cancelButton.textContent = "Cancel";
-  // cancelButton.onclick = () => {
-  //   postCreateView.remove();
-  //   back();
-  // };
-
   const buttonContainer = div("buttonContainer").add(submitButton, cancelButton)
-  // buttonContainer.appendChild(cancelButton);
-  // buttonContainer.appendChild(submitButton);
-
   const postForm = div("postForm").add(
     titleInput, textInput, categoryDiv, div("errorPlace"), buttonContainer
   )
-  // postForm.append(
-  //   div().add(
-  //     createLabeledInput("Title", titleInput),
-  //     createLabeledInput("Description", textInput),
-  //     // createLabeledInput("Upload Image", imageInput),
-  //     categoryDiv,
-  //     div("errorPlace")
-  //   ),
-  //   buttonContainer
-  // );
 
   postCreateView.appendChild(postForm);
   console.log(postCreateView);
 
   document.body.append(postCreateView)
-  //return postCreateView;
 };
-
 export default CreatePost;
+
+
+
+
 async function CreatePostFetch(titleInput, textInput) {
   if (titleInput.value.trim().length === 0) {
     document.querySelector(".errorPlace").textContent =
@@ -155,6 +116,5 @@ async function CreatePostFetch(titleInput, textInput) {
     setTimeout(() => {
       notification.remove();
     }, 3000);
-    // back();
   }
 };
