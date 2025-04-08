@@ -6,6 +6,8 @@ import (
 
 	"forum/handlers"
 	"forum/handlers/auth"
+	"forum/handlers/chat"
+
 	// Auth "forum/handlers/auth"
 	Comment "forum/handlers/comment"
 	Post "forum/handlers/posts"
@@ -21,7 +23,7 @@ func setupHandlers() {
 	http.HandleFunc("/", handlers.HomeHandler)
 	http.HandleFunc("/register", auth.RegisterUser)
 	http.HandleFunc("/login", auth.LogUser)
-	// http.HandleFunc("/chat", chat.ChatHandler)
+	http.HandleFunc("/chat", chat.ChatHandler)
 	http.HandleFunc("/CreatePost", Post.SetPostHandler)
 	http.HandleFunc("/GetPosts", Post.GetPostsHandler)
 	http.HandleFunc("/GetComments", Comment.GetCommentsHandler)
