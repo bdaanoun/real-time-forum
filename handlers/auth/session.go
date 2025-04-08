@@ -10,7 +10,9 @@ import (
 )
 
 func CheckAuth(w http.ResponseWriter, r *http.Request) {
-	_, err := ValidateSession(r, dataB.ForumDB)
+	fmt.Println("here")
+	id, err := ValidateSession(r, dataB.ForumDB)
+	fmt.Println(id  , err)
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return

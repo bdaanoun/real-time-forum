@@ -1,29 +1,43 @@
 import Home from "./home.js";
-import Auth from "./components/Auth.js";
+import login from "./login.js";
+import register from "./register.js";
 import ensureAuth from "./utils/ensureAuth.js";
-window.addEventListener("load", () => {
-    route()
+
+export default function navigateTo(path) {
+    history.pushState({}, '', path);
+    route();
+}
+
+
+window.addEventListener("popstate", () => {
+    route();
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    route();
 });
 
 async function route() {
     let url = window.location.pathname
-    console.log(url);
-
-    if (await ensureAuth()){
+    if (!await ensureAuth()) {
+        if (url === "/login") {
+            login()
+        }else {
+            register()
+        } 
+        return
+    }
+    switch (url) {
+        case "/":
+            Home()
+            break;
+        case "/login":
+            Home()
+            break;
+        case "/register":
+            Home()
+            break;
         
     }
-        switch (url) {
-            case "/":
-
-                Home()
-                break;
-            case "/login":
-                Auth("login")
-                break;
-            case "/register":
-                Auth("register")
-                break;
-
-        }
 
 } 

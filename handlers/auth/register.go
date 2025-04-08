@@ -23,6 +23,7 @@ type User struct {
 }
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("skhd")
 	db := dataBase.ForumDB
 
 	if r.Method != http.MethodPost {

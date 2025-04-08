@@ -1,9 +1,3 @@
-@import url("./post.css");
-@import url("./postView.css");
-@import url("./auth.css");
-@import url("./createPostForm.css");
-@import url("./categories.css");
-
 .homePage {
   display: flex;
   flex-direction: column;

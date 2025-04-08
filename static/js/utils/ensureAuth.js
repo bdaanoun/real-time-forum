@@ -15,12 +15,9 @@ export const changeAuthState = (state = null) => {
 };
 
 export const ensureAuth = async () => {
-  let res = await fetch("/checkAuth")
-  // let resp = res.json()
-  
+  let res = await fetch("/api/CheckAuth")
+  console.log(res);
   return res.ok
-    
-
 };
 
 export default ensureAuth;

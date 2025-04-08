@@ -50,7 +50,7 @@ func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 			"created_at": createdAt,
 		})
 	}
-
+	
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
 		http.Error(w, "Failed to encode comments to JSON", http.StatusInternalServerError)

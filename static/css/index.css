@@ -3,39 +3,8 @@
 @import url("../css/home.css");
 @import url("../css/reaction.css");
 
-:root[data-theme="light"] {
-    --text: #050316;
-    --background: #fbfbfe;
-    --primary: #2f27ce;
-    --secondary: #dddbff;
-    --accent: #443dff;
-}
-
-:root[data-theme="dark"] {
-    --text: hsla(0, 0%, 100%, 1);
-    --background: linear-gradient(129.76deg, #252937 -0.72%, #101218 80.04%);
-    --primary: #3a31d8;
-    --secondary: #020024;
-    --accent: #0600c2;
-}
-
 * {
     scrollbar-width: none;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
 }
 
 h1 {
@@ -45,6 +14,11 @@ h1 {
 
 * {
     color: var(--text);
+}
+
+html,
+body {
+    height: 100%;
 }
 
 body {
@@ -57,7 +31,6 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
-    height: 100%;
 }
 
 main {
