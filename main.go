@@ -6,6 +6,8 @@ import (
 
 	"forum/handlers"
 	"forum/handlers/auth"
+	"forum/handlers/chat"
+
 	// Auth "forum/handlers/auth"
 	Comment "forum/handlers/comment"
 	Post "forum/handlers/posts"
@@ -19,16 +21,16 @@ import (
 func setupHandlers() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", handlers.HomeHandler)
-	http.HandleFunc("/api/Register", auth.RegisterUser)
-	http.HandleFunc("/api/Login", auth.LogUser)
-	// http.HandleFunc("/chat", chat.ChatHandler)
-	http.HandleFunc("/api/CreatePost", Post.SetPostHandler)
-	http.HandleFunc("/api/GetPosts", Post.GetPostsHandler)
-	http.HandleFunc("/api/GetComments", Comment.GetCommentsHandler)
-	http.HandleFunc("/api/SetComment", Comment.SetCommentHandler)
-	http.HandleFunc("/api/Like", handlers.ReactionHandler)
-	http.HandleFunc("/api/Profile", auth.ProfileHandler)
-	http.HandleFunc("/api/CheckAuth", auth.CheckAuth)
+	http.HandleFunc("/register", auth.RegisterUser)
+	http.HandleFunc("/login", auth.LogUser)
+	http.HandleFunc("/chat", chat.ChatHandler)
+	http.HandleFunc("/CreatePost", Post.SetPostHandler)
+	http.HandleFunc("/GetPosts", Post.GetPostsHandler)
+	http.HandleFunc("/GetComments", Comment.GetCommentsHandler)
+	http.HandleFunc("/SetComment", Comment.SetCommentHandler)
+	http.HandleFunc("/like", handlers.ReactionHandler)
+	http.HandleFunc("/Profile", auth.ProfileHandler)
+	http.HandleFunc("/CheckAuth", auth.CheckAuth)
 }
 
 func main() {
