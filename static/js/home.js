@@ -4,13 +4,6 @@ import div from "./components/native/div.js";
 // import { FilterSearch } from "./components/filter.js";
 
 export default function Home() {
-  let body = document.querySelector("#backdrop")
-  let homePage = div("homePage")
-
-
-  
-  homePage.textContent = "welcome Home"
-  body.append(homePage)
+  document.body.innerHTML = "hello"
   console.log('hello');
-  return homePage
 };

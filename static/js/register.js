@@ -5,6 +5,8 @@ import input from "./utils/input.js";
 import link from "./utils/link.js";
 import select from "./utils/select.js";
 export default function register() {
+    console.log("in register");
+    
     document.body.innerHTML =""
     let nickname = input("text", "Nickname")
     let age = input("number", "Age")
@@ -48,7 +50,7 @@ async function registerUser(nickname, age, gender, firstName, lastName, email, p
         return
     }
 
-    let resp = await fetch("/api/register", {
+    let resp = await fetch("/api/Register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -68,9 +70,11 @@ async function registerUser(nickname, age, gender, firstName, lastName, email, p
         console.log("registered successfully")
         navigateTo("/")
     } else {
-        let data = await resp.json()
-        errorPlace.textContent = data.error || "Failed to register"
-        console.log("failed to register")
-    }
+        let data = await resp.text()
+        console.log(data);
+        let errorMessage = data || "Failed to register"
+        errorPlace.textContent = errorMessage
+        console.log(errorMessage)
+    } 
 }
 

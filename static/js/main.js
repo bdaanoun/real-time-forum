@@ -5,6 +5,8 @@ import ensureAuth from "./utils/ensureAuth.js";
 
 export default function navigateTo(path) {
     history.pushState({}, '', path);
+    console.log();
+    
     route();
 }
 
@@ -19,10 +21,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function route() {
     let url = window.location.pathname
+    console.log("here : " , url);
+    
     if (!await ensureAuth()) {
+        console.log("url");
         if (url === "/login") {
             login()
         }else {
+            console.log("here");
+            
             register()
         } 
         return
