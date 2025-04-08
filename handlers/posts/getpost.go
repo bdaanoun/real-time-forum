@@ -27,30 +27,33 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := auth.ValidateSession(r, dataB.ForumDB)
 	if err != nil {
 		userID = 0
-	}
-
-	rows, err := dataB.ForumDB.Query(`
-		SELECT p.id, p.title, p.content, 
-			GROUP_CONCAT(c.name) AS categories, 
-			u.first_name, u.last_name, 
-			(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND reaction_type = 1) AS like_count,
-			(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND reaction_type = -1) AS dislike_count,
-			(SELECT reaction_type FROM post_likes WHERE post_id = p.id AND user_id = ?) AS user_reaction
-		FROM posts p
-		JOIN post_categories pc ON p.id = pc.post_id
-		JOIN categories c ON pc.category_id = c.id
-		JOIN users u ON p.user_id = u.id
-		GROUP BY p.id
-		ORDER BY p.created_at DESC
-		LIMIT 10 OFFSET ?`, userID, offsetInt)
-	if err != nil {
-		log.Println("Error fetching posts:", err)
-		http.Error(w, "Error fetching posts", http.StatusInternalServerError)
 		return
 	}
+	fmt.Println("go", offset)
+	rows, err := dataB.ForumDB.Query(`
+	SELECT p.id, p.title, p.content, 
+		GROUP_CONCAT(c.name) AS categories, 
+		u.first_name, u.last_name, 
+		(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 1) AS like_count,
+		(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = -1) AS dislike_count,
+		(SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) AS user_reaction
+	FROM posts p
+	LEFT JOIN post_categories pc ON p.id = pc.post_id
+	LEFT JOIN categories c ON pc.category_id = c.id
+	JOIN users u ON p.user_id = u.id
+	GROUP BY p.id
+	ORDER BY p.created_at DESC
+	LIMIT 10 OFFSET ?`, userID, offsetInt)
+
+	if err != nil {
+		log.Println("Error fetching posts:", err)
+		http.Error(w, "Error etching posts", http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("rrr", rows)
 	defer rows.Close()
 
-	var posts []map[string]interface{}
+	posts := []map[string]interface{}{}
 
 	for rows.Next() {
 		var postID int
@@ -75,6 +78,7 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		posts = append(posts, post)
+		fmt.Println("pppp", posts)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
