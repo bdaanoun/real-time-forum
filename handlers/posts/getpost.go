@@ -31,9 +31,13 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("go", offset)
 	rows, err := dataB.ForumDB.Query(`
-	SELECT p.id, p.title, p.content, 
-		GROUP_CONCAT(c.name) AS categories, 
-		u.first_name, u.last_name, 
+	SELECT
+		p.id,
+		p.title,
+		p.content, 
+		COALESCE (GROUP_CONCAT(c.name), '') AS categories, 
+		u.first_name,
+		u.last_name, 
 		(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 1) AS like_count,
 		(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = -1) AS dislike_count,
 		(SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) AS user_reaction

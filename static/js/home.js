@@ -4,15 +4,16 @@ import div from "./components/native/div.js";
 export default async function Home() {
   const body = document.body;
   body.innerHTML = "<h2>Loading posts...</h2>";
-
+  
   try {
     const res = await fetch("/api/GetPosts");
     if (!res.ok) throw new Error("Failed to fetch posts");
-
+    
     const posts = await res.json();
     console.log("Received posts:", posts);
-
-    // body.innerHTML = ""; // Clear the loading message
+    
+    body.innerHTML = ""; // Clear the loading message
+    document.body.append(PostCreationBar())
 
     if (!Array.isArray(posts) || posts.length === 0) {
       
