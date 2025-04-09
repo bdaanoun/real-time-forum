@@ -15,7 +15,7 @@ import (
 )
 
 type LoginRequest struct {
-	Email    string `json:"email"`
+	Nickname string `json:"nickname"`
 	Password string `json:"password"`
 }
 
@@ -33,11 +33,11 @@ func LogUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve user from DB by email
+	// Retrieve user from DB by Nickname
 	var user User
-	query := `SELECT id, nickname, age, gender, first_name, last_name, email, password_hash FROM users WHERE email = ?`
-	row := db.QueryRow(query, loginRequest.Email)
-	err := row.Scan(&user.ID, &user.Nickname, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Email, &user.Password)
+	query := `SELECT id, nickname, age, gender, first_name, last_name, Nickname, password_hash FROM users WHERE Nickname = ?`
+	row := db.QueryRow(query, loginRequest.Nickname)
+	err := row.Scan(&user.ID, &user.Nickname, &user.Age, &user.Gender, &user.FirstName, &user.LastName, &user.Nickname, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "User not found", http.StatusUnauthorized)

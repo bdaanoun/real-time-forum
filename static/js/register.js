@@ -35,7 +35,7 @@ export default function register() {
                 password,
                 errorPlace,
                 btn ,
-                div("smalltext" , "Don't have an account? ").add(link("login", "/login", () => navigateTo("/login")))
+                div("smalltext" , "already have an account? ").add(link("login", "/login", () => navigateTo("/login")))
             )
 
         )
