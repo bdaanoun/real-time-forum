@@ -1,14 +1,21 @@
-import div from "./native/div.js";
-import img from "./native/img.js";
-import { timePassed } from "../utils/time.js";
-import Frame from "./Frame.js";
-import { importSvg } from "../utils/index.js";
-import { go } from "../router.js";
-import { reaction } from "./reaction.js";
+import { timePassed } from "./utils/time.js";
+import Frame from "./components/Frame.js";
+//Frame
+//import { importSvg } from "../utils/index.js";
+import { reaction } from "./components/reaction.js";
+import div from "./utils/div.js";
+import img from "./utils/img.js";
+import navigateTo from "./main.js";
+
+export default function appendPosts(postsContainer , posts) {
+    for (const post of posts) {
+        postsContainer.append(PostCard(post));
+    }
+} 
 
 export const Post = (postData) => {
   console.log(postData);
-  let profile  = img() 
+  let profile  = img("no-profile.svg")
   const cts = div("categoriesInPost");
   let categories = postData.category?.split(" ")
   categories?.forEach((cat) => {
@@ -20,24 +27,27 @@ export const Post = (postData) => {
 
   return post.add(
     div("publisher").add(
-      img(postData.publisher.profilePicture, "no-profile"),
-      div("username", postData.publisher.username),
+        profile  ,
+      //img(postData.publisher.profilePicture, "no-profile"),
+      div("username", postData.creator),
       div("time", timePassed(postData.creationTime))
     ),
     cts,
-    div("title", postData.content.title),
-    div("text", postData.content.text)
+    div("title", postData.title),
+    div("text", postData.content)
   );
 };
 
 export const PostCard = (postData) => {
   const showPost = () => {
-    go(`/post/${postData.id}`, true, postData);
+    navigateTo(`/post/${postData.id}`, postData)
+    //go(`/post/${postData.id}`, true, postData);
   };
 
   const readMore = div("readmore", "Read more");
   readMore.onclick = showPost;
-  const comment = img(importSvg("comment-bubble"));
+
+  const comment = img("comment-bubble.svg");
   comment.onclick = showPost;
   const reactionEndpoint = `/api/reactions/posts/${postData.id}/`;
   const [like, likeOnClick] = reaction("like", postData);
@@ -53,4 +63,3 @@ export const PostCard = (postData) => {
     )
   );
 };
-export default Post;

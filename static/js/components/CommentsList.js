@@ -2,8 +2,8 @@ import { timePassed } from "../utils/time.js";
 import div from "./native/div.js";
 import img from "./native/img.js";
 import { reaction } from "./reaction.js";
-export const CommentContainer = (comment) => {
-  const reactionEndpoint = `/api/reactions/comments/${comment.id}/`;
+export const BuildComment = (comment) => {
+  const reactionEndpoint = `/api/Like?id=${comment.id}/`;
   const [like, onLike] = reaction("like", comment);
   const [dislike, onDislike] = reaction("dislike", comment);
 
@@ -20,17 +20,17 @@ export const CommentContainer = (comment) => {
     div("reactionsContainer").add(like, dislike)
   );
 };
-
-const fetchComments = async (commentsList, postId) => {
+const fetchComments = async (postId) => {
   const resp = await fetch(`/api/posts/${postId}/comments`);
   const json = await resp.json();
-  json?.forEach((comment) => {
-    commentsList.add(CommentContainer(comment));
-  });
+  return json
 };
 
-export const CommentsList = (postId) => {
+export const fetchAndDisplatComments = (postId) => {
+  let comments = fetchComments(postId);
   const commentsList = div("commentsList");
-  fetchComments(commentsList, postId);
-  return commentsList;
+  comments?.forEach((comment) => {
+    commentsList.add(BuildComment(comment));
+  });
+  return 
 };

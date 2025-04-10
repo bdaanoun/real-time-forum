@@ -1,14 +1,14 @@
 import CreatePost from "./components/createPost.js";
 import Home from "./home.js";
 import login from "./login.js";
+import PostView from "./PostView.js";
 import register from "./register.js";
 import ensureAuth from "./utils/ensureAuth.js";
 
-export default function navigateTo(path) {
+export default function navigateTo(path , data) {
     history.pushState({}, '', path);
     console.log();
-    
-    route();
+    route(data);
 }
 
 
@@ -20,9 +20,8 @@ window.addEventListener("DOMContentLoaded", () => {
     route();
 });
 
-async function route() {
+async function route(data) {
     let url = window.location.pathname
-    console.log("here : " , url);
     
     if (!await ensureAuth()) {
         console.log("url");
@@ -35,6 +34,14 @@ async function route() {
         } 
         return
     }
+
+    const postMatch = url.match(/^\/post\/(\d+)$/);
+    if (postMatch) {
+        const postId = postMatch[1];
+        PostView(); 
+        return;
+    }
+
     switch (url) {
         case "/":
             Home()

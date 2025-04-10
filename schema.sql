@@ -24,7 +24,6 @@ INSERT OR IGNORE INTO categories (name) VALUES
 ('health'),
 ('nature');
 
-
 CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
