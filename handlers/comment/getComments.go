@@ -15,7 +15,7 @@ func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing post_id query parameter", http.StatusBadRequest)
 		return
 	}
-
+	
 	postID, err := strconv.Atoi(postIDStr)
 	if err != nil {
 		http.Error(w, "Invalid post_id", http.StatusBadRequest)
