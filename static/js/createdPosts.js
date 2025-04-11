@@ -1,11 +1,13 @@
 import appendPosts from "./appendPosts.js";
+import { appendUserHeader } from "./components/Headers.js";
 import div from "./utils/div.js";
 export default async function AppendCreatedPosts() {
+    document.body.innerHTML = ""
+    appendUserHeader("created")
     let likedPosts =  await fetchcreatedPosts()
         let postsContainer =  div("postsContainer")
         console.log(likedPosts);
         
-        document.body.innerHTML = ""
         document.body.append(postsContainer)
         appendPosts(postsContainer ,  likedPosts)
 }

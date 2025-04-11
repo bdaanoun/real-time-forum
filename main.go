@@ -21,10 +21,12 @@ import (
 func setupHandlers() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", handlers.HomeHandler)
+	// auth
 	http.HandleFunc("/api/Register", auth.RegisterUser)
 	http.HandleFunc("/api/Login", auth.LogUser)
+	http.HandleFunc("/api/Logout", auth.LogoutHandler)
 	http.HandleFunc("/api/Chat", chat.ChatHandler)
-	//posts
+	// posts
 	http.HandleFunc("/api/CreatePost", Post.SetPostHandler)
 	http.HandleFunc("/api/GetPosts", Post.GetPostsHandler)
 	http.HandleFunc("/api/GetPost", Post.GetPostHandler)

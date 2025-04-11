@@ -6,7 +6,7 @@ import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 export default async function Home() {
   document.body.innerHTML = "";
-  await appendUserHeader()
+  await appendUserHeader("home")
   document.body.append(PostCreationBar());
 
   setupCategoryFilters()
