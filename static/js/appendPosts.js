@@ -17,7 +17,7 @@ export const Post = (postData) => {
   console.log(postData);
   let profile  = img("no-profile.svg")
   const cts = div("categoriesInPost");
-  let categories = postData.category?.split(" ")
+  let categories = postData.category?.split(",")
   categories?.forEach((cat) => {
     if (cat != "") {
       cts.append(div("cat", "#" + cat));
