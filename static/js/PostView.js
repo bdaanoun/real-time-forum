@@ -1,114 +1,109 @@
 import div from "./components/native/div.js";
-//import { CommentInput } from "./components/CommentInput.js";
-import { fetchAndDisplatComments } from "./components/CommentsList.js";
 import { Post } from "./appendPosts.js";
-import { back, GetParams } from "./router.js";
+import { back } from "./router.js";
 import img from "./utils/img.js";
-import CommentInput from "./CommentInput.js";
 import input from "./utils/input.js";
 import button from "./utils/button.js";
 import { timePassed } from "./utils/time.js";
-
-
-
-// const renderPostView = (postData) => {
-//   return div("postCard").add(
-//     Post(postData),
-//     div("commentsWrap").add(
-//       fetchAndDisplatComments(postData.id),
-//       //CommentInput(postData.id)
-//     )
-//   );
-// };
+import navigateTo from "./main.js";
 
 const PostView = async (postData) => {
   const postView = div("postView");
 
   postView.onclick = (e) => {
-    if (e.target == postView) {
+    if (e.target === postView) {
       back();
     }
   };
 
   const pathParts = window.location.pathname.split("/");
   const id = pathParts[2];
+
   if (!postData) {
-    console.log("dkhl");
-
-    let data = await fetch(`/api/GetPost?id=${id}`)
-    postData = await data.json();
-    console.log(postData);
-
-    // fetch(`/api/GetPost?id=${id}`)
-    //   .then(async (res) => {
-    //     const postData = await res.json();
-    //     // postView.append(renderPostView(postData));
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error fetching post data:", err);
-    //     postView.append(div("error").add("Failed to load post."));
-    //   });
-    //return postView;
+    try {
+      const res = await fetch(`/api/GetPost?id=${id}`);
+      if (!res.ok) {
+        console.log('hello');
+        
+        navigateTo("/page404");
+        return;
+      }
+      postData = await res.json();
+    } catch (err) {
+      console.error("Error fetching post data:", err);
+      navigateTo("/page404");
+      return;
+    }
   }
-  //
-  console.log(postData);
 
-  let data = await fetch(`/api/GetComments?post_id=${id}`)
-  const comments = await data.json();
-  console.log(comments);
-  
   const commentsList = div("commentsList");
-  let pop = div("postCard").add(
+
+  const inputField = input("text", "Write a comment...");
+  inputField.classList.add("commInput");
+
+  const commentInputWrap = div("inputwrap").add(
+    inputField,
+    button("Send", () => sendComment(postData.id))
+  );
+
+  const postCard = div("postCard").add(
     Post(postData),
-    div("commentsWrap").add(
-      commentsList,
-      div("inputwrap").add(input("text", "commInput"), button("send", () => { sendComment(postData.id) }))
-      //CommentInput(postData.id)
-    )
-  )
-  document.body.append(pop)
-  comments?.forEach((comment) => {
-    rederComment( comment)
-  });
+    div("commentsWrap").add(commentsList, commentInputWrap)
+  );
 
+  document.body.append(postCard);
 
-  // postView.append(renderPostView(postData));
+  try {
+    const data = await fetch(`/api/GetComments?post_id=${id}`);
+    const comments = await data.json();
 
-  //return postView;
+    comments?.forEach((comment) => {
+      renderComment(comment);
+    });
+  } catch (err) {
+    console.error("Failed to load comments:", err);
+  }
 };
+
 const sendComment = async (postId) => {
-  const input = document.querySelector('input[placeholder="commInput"]');
-  if (input.value.trim().length === 0) {
-    return;
-  }
-  const body = {
-    content: input.value,
-    post_id: postId
-  };
-  const resp = await fetch(`/api/SetComment`, {
-    method: "post",
-    body: JSON.stringify(body),
-  });
+  const input = document.querySelector(".commInput");
+  if (!input || input.value.trim().length === 0) return;
 
-  if (resp.ok) {
-    console.log("comment created successfully");
-   // let inputWrap =  document.querySelector("input")
-    input.parentNode.parentNode.children[0].prepend(rederComment((await resp.json()), postId))
-    input.value = "";
+  const body = {
+    content: input.value.trim(),
+    post_id: postId,
+  };
+
+  try {
+    const resp = await fetch(`/api/SetComment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (resp.ok) {
+      const newComment = await resp.json();
+      const commentElement = renderComment(newComment);
+      const commentsList = document.querySelector(".commentsList");
+      commentsList.prepend(commentElement);
+      input.value = "";
+    } else {
+      console.error("Failed to create comment");
+    }
+  } catch (err) {
+    console.error("Error sending comment:", err);
   }
 };
-function rederComment(comment) {
-  let commentsList = document.querySelector(".commentsList")
-  commentsList.add(div("comment").add(
+
+function renderComment(comment) {
+  return div("comment").add(
     div("publisher").add(
       img("no-profile.svg"),
-      div("username", comment.last_name),
+      div("username", `${comment.first_name} ${comment.last_name}`),
       div("time", ` • ${timePassed(comment.created_at)}`)
     ),
-    div("text", comment.content),
-    //div("reactionsContainer").add(like, dislike)
-  )
-  )
-  return commentsList
+    div("text", comment.content)
+  );
 }
+
 export default PostView;

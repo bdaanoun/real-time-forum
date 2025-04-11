@@ -1,0 +1,38 @@
+/* Make sure everything's centered full screen */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    color: #eee;
+    font-family: Verdana,sans-serif ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Container with vertical stacking */
+  .not-found {
+    text-align: center;
+  }
+  
+  /* Title */
+  .not-found .title {
+    font-size: 4em;
+    color: #ff4c4c;
+    margin-bottom: 20px;
+  }
+  
+  /* Message */
+  .not-found .message {
+    font-size: 1.6em;
+    color: #ccc;
+    margin-bottom: 10px;
+  }
+  
+  /* Hint */
+  .not-found .hint {
+    font-size: 1em;
+    color: #888;
+    /* font-style: italic; */
+  }
+  
