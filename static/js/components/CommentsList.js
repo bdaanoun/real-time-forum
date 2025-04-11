@@ -32,5 +32,5 @@ export const fetchAndDisplatComments = (postId) => {
   comments?.forEach((comment) => {
     commentsList.add(BuildComment(comment));
   });
-  return 
+  return
 };

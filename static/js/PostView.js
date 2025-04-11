@@ -24,7 +24,7 @@ const PostView = async (postData) => {
       const res = await fetch(`/api/GetPost?id=${id}`);
       if (!res.ok) {
         console.log('hello');
-        
+
         navigateTo("/page404");
         return;
       }
@@ -58,7 +58,8 @@ const PostView = async (postData) => {
     const comments = await data.json();
 
     comments?.forEach((comment) => {
-      renderComment(comment);
+      const commentElement = renderComment(comment);
+      commentsList.add(commentElement);
     });
   } catch (err) {
     console.error("Failed to load comments:", err);

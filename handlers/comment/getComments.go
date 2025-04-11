@@ -9,13 +9,20 @@ import (
 	dataB "forum/handlers/dataBase"
 )
 
+type Comment struct {
+	Content   string `json:"content"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	CreatedAt string `json:"created_at"`
+}
+
 func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 	postIDStr := r.URL.Query().Get("post_id")
 	if postIDStr == "" {
 		http.Error(w, "Missing post_id query parameter", http.StatusBadRequest)
 		return
 	}
-	
+
 	postID, err := strconv.Atoi(postIDStr)
 	if err != nil {
 		http.Error(w, "Invalid post_id", http.StatusBadRequest)
@@ -33,7 +40,8 @@ func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer commentRows.Close()
-	var comments []map[string]interface{}
+	var comments []Comment
+	// var comments []map[string]interface{}
 	for commentRows.Next() {
 		var commentContent, commentFirstName, commentLastName string
 		var createdAt string
@@ -42,15 +50,15 @@ func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error scanning comment:", err)
 			continue
 		}
-
-		comments = append(comments, map[string]interface{}{
-			"content":    commentContent,
-			"first_name": commentFirstName,
-			"last_name":  commentLastName,
-			"created_at": createdAt,
-		})
+		comment := Comment{
+			Content:   commentContent,
+			FirstName: commentFirstName,
+			LastName:  commentLastName,
+			CreatedAt: createdAt,
+		}
+		comments = append(comments, comment)
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(comments); err != nil {
 		http.Error(w, "Failed to encode comments to JSON", http.StatusInternalServerError)
