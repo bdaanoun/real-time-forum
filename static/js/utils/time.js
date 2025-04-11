@@ -1,4 +1,8 @@
 export function timePassed(date) {
+  console.log(date);
+  //console.log(date.t);
+  
+  
   const now = new Date();
   const pastDate = new Date(date);
   const diff = now - pastDate; // Difference in milliseconds

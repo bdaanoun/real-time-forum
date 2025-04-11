@@ -1,10 +1,12 @@
 import appendPosts from "./appendPosts.js";
 import { PostCreationBar } from "./components/createPost.js";
+import { appendUserHeader } from "./components/Headers.js";
 import div from "./components/native/div.js";
 import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 export default async function Home() {
   document.body.innerHTML = "";
+  await appendUserHeader()
   document.body.append(PostCreationBar());
 
   setupCategoryFilters()

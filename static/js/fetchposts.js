@@ -11,7 +11,7 @@ export default async function fetchPosts() {
 
   const res = await fetch(`/api/GetPosts?${params.toString()}`);
   const json = await res.json();
-
+  
   offset.increase(json.length);
   return json;
 }

@@ -7,7 +7,7 @@ import img from "./utils/img.js";
 import CommentInput from "./CommentInput.js";
 import input from "./utils/input.js";
 import button from "./utils/button.js";
-
+import { timePassed } from "./utils/time.js";
 
 
 
@@ -102,8 +102,8 @@ function rederComment(comment) {
   commentsList.add(div("comment").add(
     div("publisher").add(
       img("no-profile.svg"),
-      div("username", "comment.publisher.username"),
-      div("time", ` • sdlk`)
+      div("username", comment.last_name),
+      div("time", ` • ${timePassed(comment.created_at)}`)
     ),
     div("text", comment.content),
     //div("reactionsContainer").add(like, dislike)

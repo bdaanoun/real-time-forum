@@ -28,6 +28,9 @@ func setupHandlers() {
 	http.HandleFunc("/api/CreatePost", Post.SetPostHandler)
 	http.HandleFunc("/api/GetPosts", Post.GetPostsHandler)
 	http.HandleFunc("/api/GetPost", Post.GetPostHandler)
+	http.HandleFunc("/api/GetLikedPosts", Post.GetLikedPostsHandler)
+	http.HandleFunc("/api/GetCreatedPosts", Post.GetCreatedPostsHandler)
+
 	//
 	http.HandleFunc("/api/GetComments", Comment.GetCommentsHandler)
 	http.HandleFunc("/api/SetComment", Comment.SetCommentHandler)

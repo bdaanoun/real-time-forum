@@ -24,13 +24,15 @@ export const Post = (postData) => {
     }
   });
   const post = div("post");
-
+  console.log(postData);
+  console.log(postData.created_at);
+  
   return post.add(
     div("publisher").add(
         profile  ,
       //img(postData.publisher.profilePicture, "no-profile"),
       div("username", postData.creator),
-      div("time", timePassed(postData.creationTime))
+      div("time", `* ${timePassed(postData.created_at)}`)
     ),
     cts,
     div("title", postData.title),

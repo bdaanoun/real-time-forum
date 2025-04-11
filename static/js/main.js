@@ -5,7 +5,7 @@ import PostView from "./PostView.js";
 import register from "./register.js";
 import ensureAuth from "./utils/ensureAuth.js";
 
-export default function navigateTo(path , data) {
+export default function navigateTo(path, data) {
     history.pushState({}, '', path);
     console.log();
     route(data);
@@ -22,23 +22,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function route(data) {
     let url = window.location.pathname
-    
+
     if (!await ensureAuth()) {
         console.log("url");
         if (url === "/login") {
             login()
-        }else {
+        } else {
             console.log("here");
-            
+
             register()
-        } 
+        }
         return
     }
 
     const postMatch = url.match(/^\/post\/(\d+)$/);
     if (postMatch) {
         const postId = postMatch[1];
-        PostView(); 
+        PostView();
         return;
     }
 
@@ -46,8 +46,14 @@ async function route(data) {
         case "/":
             Home()
             break;
-        case "/create-post" :
+        case "/create-post":
             document.body.append(CreatePost())
+            break
+        case "/liked":
+            AppendLikedPosts()
+            break
+        case "/created":
+            AppendCreatedPosts()
             break
         case "/login":
             Home()
@@ -55,7 +61,7 @@ async function route(data) {
         case "/register":
             Home()
             break;
-        
+
     }
 
 } 
