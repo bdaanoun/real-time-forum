@@ -1,10 +1,11 @@
 import CreatePost from "./components/createPost.js";
+import AppendCreatedPosts from "./createdPosts.js";
 import Home from "./home.js";
+import AppendLikedPosts from "./likedposts.js";
 import login from "./login.js";
 import PostView from "./PostView.js";
 import register from "./register.js";
 import ensureAuth from "./utils/ensureAuth.js";
-
 export default function navigateTo(path, data) {
     history.pushState({}, '', path);
     console.log();
