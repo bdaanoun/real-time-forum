@@ -32,7 +32,7 @@ export const Post = (postData) => {
         profile  ,
       //img(postData.publisher.profilePicture, "no-profile"),
       div("username", postData.creator),
-      div("time", `* ${timePassed(postData.created_at)}`)
+      div("time", `• ${timePassed(postData.created_at)}`)
     ),
     cts,
     div("title", postData.title),

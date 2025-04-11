@@ -1,18 +1,15 @@
-/* Make sure everything's centered full screen */
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    color: #eee;
-    font-family: Verdana,sans-serif ;
+/* Container for the 404 message */
+.not-found {
     display: flex;
+    flex-direction: column; 
     align-items: center;
     justify-content: center;
-  }
-  
-  /* Container with vertical stacking */
-  .not-found {
+    height: 100vh;
+    color: #eee;            
+    font-family: Verdana, sans-serif;
     text-align: center;
+    padding: 20px;
+    /* background-color: transparent; */
   }
   
   /* Title */
@@ -33,6 +30,5 @@ html, body {
   .not-found .hint {
     font-size: 1em;
     color: #888;
-    /* font-style: italic; */
   }
   

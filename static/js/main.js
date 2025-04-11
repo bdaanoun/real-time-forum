@@ -71,7 +71,7 @@ async function route(data) {
 function pageNotFound() {
     document.body.innerHTML = ""; // Clear out the current page
 
-    console.log("what you trying to do MF.");
+    // console.log("what you trying to do MF.");
 
     const container = div("not-found").add(
         div("title", "404 - Page Not Found"),
