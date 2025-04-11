@@ -35,18 +35,23 @@ export async function CreatePost() {
   const titleInput = input("text", "Title");
   const textInput = textarea("Content");
   const categoryDiv = div("categ");
-  const categories = ["Technology", "Sport", "Finance", "Science"];
-  categories.forEach((cat) => {
+  const categories = ["Technology", "Sport", "Finance", "Science", "Nature"];
+  categories.forEach((cat, index) => {
     const checkboxLabel = document.createElement("label");
     checkboxLabel.className = "category-label";
+
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.value = cat;
     checkbox.className = "category-checkbox";
+    checkbox.value = index
+
+    const labelText = document.createTextNode(cat);
     checkboxLabel.appendChild(checkbox);
-    checkboxLabel.appendChild(document.createTextNode(cat));
+    checkboxLabel.appendChild(labelText);
+
     categoryDiv.appendChild(checkboxLabel);
   });
+
 
   const submitButton = button("Create a Post", async () => { await CreatePostFetch(titleInput, textInput) });
   const cancelButton = button("Cancel", () => { document.querySelector(".postForm").remove() });
@@ -90,14 +95,14 @@ async function CreatePostFetch(titleInput, textInput) {
       user_id: parseInt(id), // Make sure it's an integer
       categories: Array.from(
         document.querySelectorAll(".category-checkbox:checked")
-      ).map((checkbox) => parseInt(checkbox.value)), // Convert to integers
+
+      ).map((checkbox) => parseInt(checkbox.value))
+
     }),
   });
 
-  console.log("1");
 
   if (resp.ok) {
-    console.log("here");
 
     let nn = await resp.text();
     const notification = document.createElement("div");

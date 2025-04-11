@@ -2,6 +2,7 @@ package posts
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -30,6 +31,7 @@ func SetPostHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
+	fmt.Println("cat**********", req.Categories)
 
 	// Basic validation
 	if req.Title == "" || req.Content == "" || req.UserID == 0 {
@@ -51,7 +53,7 @@ func SetPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for _, categoryID := range req.Categories {
-		_, err := db.Exec(`INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)`, postID, categoryID)
+		_, err := db.Exec(`INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)`, postID, categoryID+1)
 		if err != nil {
 			http.Error(w, "failed to inset categories", http.StatusInternalServerError)
 		}
