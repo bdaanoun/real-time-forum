@@ -5,6 +5,7 @@ import navigateTo from "./main.js"
 import input from "./utils/input.js";
 import textarea from "./utils/textarea.js";
 import button from "./utils/button.js";
+import { PostCard } from "./appendPosts.js";
 export const PostCreationBar = () => {
   const placeholder = "want to share a story?! write here...";
   const createButton = div("create-post");
@@ -12,7 +13,7 @@ export const PostCreationBar = () => {
     if (!ensureAuth()) {
       return;
     }
-    navigateTo("/create-post");
+    document.body.append(CreatePost())
   };
   return createButton.add(
     div("post-input", placeholder),
@@ -81,7 +82,7 @@ async function CreatePostFetch(titleInput, textInput) {
     return;
   }
   let res = await fetch("/api/CheckAuth");
-  let id = await res.text(); // This is a string, may need to convert to int
+  let id = await res.text();
 
   let resp = await fetch("/api/CreatePost", {
     method: "POST",
@@ -91,7 +92,7 @@ async function CreatePostFetch(titleInput, textInput) {
     body: JSON.stringify({
       title: titleInput.value.trim(),
       content: textInput.value.trim(),
-      user_id: parseInt(id), // Make sure it's an integer
+      user_id: parseInt(id), 
       categories: Array.from(
         document.querySelectorAll(".category-checkbox:checked")
 
@@ -102,8 +103,7 @@ async function CreatePostFetch(titleInput, textInput) {
 
 
   if (resp.ok) {
-
-    let nn = await resp.text();
+    let nn = await resp.json();
     const notification = document.createElement("div");
     notification.classList.add("notification");
     notification.innerText = "Post Created Successfully ✓";
@@ -111,6 +111,9 @@ async function CreatePostFetch(titleInput, textInput) {
     setTimeout(() => {
       notification.remove();
     }, 3000);
+    let postsContainer  = document.querySelector(".postsContainer")
+    postsContainer.prepend(PostCard(nn))
+    document.querySelector(".postCreateView").remove();
     back();
   } else {
     const notification = document.createElement("div");

@@ -9,7 +9,6 @@ import navigateTo from "./main.js";
 
 const PostView = async (postData) => {
   const postView = div("postView");
-
   postView.onclick = (e) => {
     if (e.target === postView) {
       back();
@@ -23,8 +22,6 @@ const PostView = async (postData) => {
     try {
       const res = await fetch(`/api/GetPost?id=${id}`);
       if (!res.ok) {
-        console.log('hello');
-
         navigateTo("/page404");
         return;
       }
@@ -50,8 +47,8 @@ const PostView = async (postData) => {
     Post(postData),
     div("commentsWrap").add(commentsList, commentInputWrap)
   );
-
-  document.body.append(postCard);
+  postView.append(postCard)
+  document.body.append(postView);
 
   try {
     const data = await fetch(`/api/GetComments?post_id=${id}`);

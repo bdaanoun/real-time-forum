@@ -45,9 +45,9 @@ async function route(data) {
         case "/":
             Home()
             break;
-        case "/create-post":
-            document.body.append(CreatePost())
-            break
+        // case "/create-post":
+        //     document.body.append(CreatePost())
+        //     break
         case "/liked":
             AppendLikedPosts()
             break
