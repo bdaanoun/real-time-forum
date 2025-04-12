@@ -56,7 +56,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
                 http.Error(w, "Error etching posts", http.StatusInternalServerError)
                 return
         }
-        fmt.Println("rrr", rows)
         defer rows.Close()
 
         posts := []map[string]interface{}{}
@@ -86,7 +85,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
                 }
 
                 posts = append(posts, post)
-                fmt.Println("pppp", posts)
         }
 
         w.Header().Set("Content-Type", "application/json")
