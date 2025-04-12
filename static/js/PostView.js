@@ -6,6 +6,7 @@ import input from "./utils/input.js";
 import button from "./utils/button.js";
 import { timePassed } from "./utils/time.js";
 import navigateTo from "./main.js";
+import createReactionElement from "./reaction.js";
 
 const PostView = async (postData) => {
   const postView = div("postView");
@@ -37,7 +38,7 @@ const PostView = async (postData) => {
 
   const inputField = input("text", "Write a comment...");
   inputField.classList.add("commInput");
- 
+
   const commentInputWrap = div("inputwrap").add(
 
     inputField,
@@ -47,7 +48,7 @@ const PostView = async (postData) => {
   h2.innerText = `Comments`;
   const postCard = div("postCard").add(
     Post(postData),
-    div("commentsWrap").add(h2 , commentsList, commentInputWrap)
+    div("commentsWrap").add(h2, commentsList, commentInputWrap)
   );
   postView.append(postCard)
   document.body.append(postView);
@@ -56,8 +57,8 @@ const PostView = async (postData) => {
     const data = await fetch(`/api/GetComments?post_id=${id}`);
     const comments = await data.json();
 
-    comments?.forEach((comment) => {
-      const commentElement = renderComment(comment);
+    comments?.forEach(async(comment) => {
+      const commentElement =await renderComment(comment);
       commentsList.add(commentElement);
     });
   } catch (err) {
@@ -95,14 +96,17 @@ const sendComment = async (postId) => {
   }
 };
 
-function renderComment(comment) {
+async function  renderComment(comment) {
+  let react1 = await createReactionElement(comment.id, "comment", "like", comment.like_count, comment.user_reaction)
+  let react2 = await createReactionElement(comment.id, "comment", "dislike", comment.dislike_count, comment.user_reaction)
   return div("comment").add(
     div("publisher").add(
       img("no-profile.svg"),
       div("username", `${comment.first_name} ${comment.last_name}`),
       div("time", ` • ${timePassed(comment.created_at)}`)
     ),
-    div("text", comment.content)
+    div("text", comment.content),
+    div("reactionsContainer").add(react1 ,react2),
   );
 }
 

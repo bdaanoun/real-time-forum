@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS comment_reactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     comment_id INTEGER NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    is_like INTEGER NOT NULL CHECK (is_like IN (0, 1)),
+    reaction_type INTEGER NOT NULL CHECK (reaction_type IN (-1, 0, 1))
     UNIQUE(comment_id, user_id)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS messages (
     sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     read BOOLEAN DEFAULT 0
 );
 

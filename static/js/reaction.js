@@ -20,7 +20,6 @@ export const react = async (itemId, itemType, element) => {
   const adverseElement = accessOtherChildren(element);
   const isReacted = element.classList.contains("reacted");
   let reactionType = isReacted ? 0 : element.classList.contains("like") ? 1 : -1;
-
   try {
     const response = await fetch(
       `/api/Like?item_type=${itemType}&item_id=${itemId}&reaction_type=${reactionType}`,
