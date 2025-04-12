@@ -16,6 +16,8 @@ export default async function Home() {
 
 
   let posts = await fetchPosts();
+  console.log("m in home");
+  
   appendPosts(postsContainer , posts)
 
   window.addEventListener("scroll", async () => {

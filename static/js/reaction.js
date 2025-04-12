@@ -1,3 +1,68 @@
+import div from "./utils/div.js";
+import svg from "./utils/svg.js";
+export default async function createReactionElement(itemId, itemType, reactionType, nOfReactions, currentReaction) {
+  const reactionValue = reactionType === "like" ? 1 : -1;
+  const element = div(`reaction ${reactionType}`).add(
+    await svg(reactionType),
+    div("", nOfReactions)
+  );
+  if (currentReaction === reactionValue) {
+    element.classList.add("reacted");
+  }
+  element.onclick = async() => {
+    await react(itemId, itemType,element);
+  };
+
+  return element;
+};
+
+export const react = async (itemId, itemType, element) => {
+  const adverseElement = accessOtherChildren(element);
+  const isReacted = element.classList.contains("reacted");
+  let reactionType = isReacted ? 0 : element.classList.contains("like") ? 1 : -1;
+
+  try {
+    const response = await fetch(
+      `/api/Like?item_type=${itemType}&item_id=${itemId}&reaction_type=${reactionType}`,
+      {
+        method: "UPDATE",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    element.classList.toggle("reacted");
+
+    const count = element.children[1];
+
+    if (isReacted) {
+      count.textContent--;
+    } else {
+      count.textContent++;
+      if (adverseElement && adverseElement.classList.contains("reacted")) {
+        const adverseCount = adverseElement.children[1];
+        adverseCount.textContent--;
+        adverseElement.classList.remove("reacted");
+      }
+    }
+  } catch (error) {
+    console.error("Reaction failed:", error);
+    // Handle error appropriately (e.g., show a message to the user)
+  }
+};
+function accessOtherChildren(element) {
+  if (!element || !element.parentElement) {
+    return [];
+  }
+
+  const parent = element.parentElement;
+  const children = Array.from(parent.children);
+
+  return children.filter(child => child !== element)[0];
+}
+
 // import { svg } from "./utils/svg.js";
 // import div from "./native/div.js";
 // export const reaction = (type, postData) => {

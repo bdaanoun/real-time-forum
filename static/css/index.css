@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Patua%20One:700|Patua%20One:400');
 @import url('https://fonts.googleapis.com/css?family=Inter:700|Inter:400');
-@import url("../css/home.css");
 @import url("../css/reaction.css");
 
 * {
@@ -21,7 +20,6 @@ body {
 
     overflow-y: scroll;
 }
-
 body {
     margin: 0;
     font-family: Inter;

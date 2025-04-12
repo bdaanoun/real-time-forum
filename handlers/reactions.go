@@ -1,10 +1,12 @@
 package handlers
 
 import (
-	"forum/handlers/auth"
-	database "forum/handlers/dataBase"
+	"fmt"
 	"net/http"
 	"strconv"
+
+	"forum/handlers/auth"
+	database "forum/handlers/dataBase"
 )
 
 func ReactionHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,12 +29,12 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing item Type or item id", http.StatusBadRequest)
 		return
 	}
-
-	if itemType != "posts" && itemType != "comments" {
+	fmt.Println(itemType, itemId)
+	if itemType != "post" && itemType != "comment" {
 		http.Error(w, "Invalid item type", http.StatusBadRequest)
 		return
 	}
-	if itemType == "posts" {
+	if itemType == "post" {
 		_, err := database.ForumDB.Exec(`INSERT INTO post_reactions (post_id, user_id, reaction_type) VALUES (?, ?, ?)
 		ON CONFLICT(post_id, user_id) 
 		DO UPDATE SET reaction_type = excluded.reaction_type`, itemId, userID, reaction_type)
@@ -44,7 +46,7 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Reaction added successfully"))
 
 	}
-	if itemType == "comments" {
+	if itemType == "comment" {
 		_, err := database.ForumDB.Exec(`INSERT INTO comment_reactions (comment_id, user_id, reaction_type) VALUES (?, ?, ?)
 		ON CONFLICT(comment_id, user_id) 
 		DO UPDATE SET reaction_type = excluded.reaction_type`, itemId, userID, reaction_type)
@@ -56,5 +58,4 @@ func ReactionHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Reaction added successfully"))
 		return
 	}
-
 }

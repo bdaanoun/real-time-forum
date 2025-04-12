@@ -1,34 +1,31 @@
-/* Container for the 404 message */
 .not-found {
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #eee;            
-    font-family: Verdana, sans-serif;
-    text-align: center;
-    padding: 20px;
-    /* background-color: transparent; */
-  }
-  
-  /* Title */
-  .not-found .title {
-    font-size: 4em;
-    color: #ff4c4c;
-    margin-bottom: 20px;
-  }
-  
-  /* Message */
-  .not-found .message {
-    font-size: 1.6em;
-    color: #ccc;
-    margin-bottom: 10px;
-  }
-  
-  /* Hint */
-  .not-found .hint {
-    font-size: 1em;
-    color: #888;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: #eee;
+  font-family: Verdana, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Title */
+.not-found .title {
+  font-size: 4em;
+  color: #ff4c4c;
+  margin-bottom: 20px;
+}
+
+/* Message */
+.not-found .message {
+  font-size: 1.6em;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+/* Hint */
+.not-found .hint {
+  font-size: 1em;
+  color: #888;
+}

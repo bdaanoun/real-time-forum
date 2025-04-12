@@ -7,6 +7,7 @@
     border-radius: 24px;
     max-width: 900px;
     margin: auto;
+    cursor: pointer;
 }
 
 
@@ -17,9 +18,17 @@
     border-radius: 24px;
     z-index: 1;
     background: #FFFFFF14;
-    overflow: hidden;
-    cursor: default;
+    align-self: stretch;
+    overflow: scroll;
     max-height: 40vh;
+
+}
+
+.post .text {
+    flex: 1;
+    overflow-y: auto;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .text,
@@ -35,6 +44,7 @@
     font-size: clamp(1rem, 1vw, 1.5rem);
     line-height: 1.5rem;
 }
+
 .post .title {
     font-family: "Inter";
     font-weight: 600;
@@ -45,7 +55,14 @@
     overflow: hidden;
     white-space: nowrap;
 }
-
+.postsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.comntBtn {
+    cursor: pointer;
+}
 .leftBar {
     padding: 0 8px;
     display: flex;

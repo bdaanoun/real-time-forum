@@ -37,15 +37,17 @@ const PostView = async (postData) => {
 
   const inputField = input("text", "Write a comment...");
   inputField.classList.add("commInput");
-
+ 
   const commentInputWrap = div("inputwrap").add(
+
     inputField,
     button("Send", () => sendComment(postData.id))
   );
-
+  let h2 = document.createElement("h2");
+  h2.innerText = `Comments`;
   const postCard = div("postCard").add(
     Post(postData),
-    div("commentsWrap").add(commentsList, commentInputWrap)
+    div("commentsWrap").add(h2 , commentsList, commentInputWrap)
   );
   postView.append(postCard)
   document.body.append(postView);

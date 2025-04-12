@@ -43,7 +43,7 @@ async function route(data) {
 
     switch (url) {
         case "/":
-            Home()
+            await Home()
             break;
         // case "/create-post":
         //     document.body.append(CreatePost())
