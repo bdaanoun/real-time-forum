@@ -1,3 +1,9 @@
+body {
+    background-color:#1A1D24;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
 .postView {
     top: 0;
     left: 0;

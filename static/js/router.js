@@ -1,8 +1,8 @@
 import navigateTo from "./main.js";
 
 export default function back() {
-  if (!history.state.prev) {
-    navigateTo("/");
+  if (!history.state) {
+    //navigateTo("/");
   } else {
     history.back();
   }
