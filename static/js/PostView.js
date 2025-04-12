@@ -1,6 +1,6 @@
-import div from "./components/native/div.js";
+import div from "./utils/div.js";
 import { Post } from "./appendPosts.js";
-import { back } from "./router.js";
+import back from "./router.js";
 import img from "./utils/img.js";
 import input from "./utils/input.js";
 import button from "./utils/button.js";

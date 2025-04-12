@@ -1,11 +1,10 @@
-import { back, go } from "../router.js";
-import ensureAuth from "../utils/ensureAuth.js";
-import { Fetch } from "../utils/fetch.js";
-import div from "./native/div.js";
-import navigateTo from "../main.js"
-import input from "../utils/input.js";
-import textarea from "../utils/textarea.js";
-import button from "../utils/button.js";
+import back from "./router.js";
+import ensureAuth from "./utils/ensureAuth.js";
+import div from "./utils/div.js";
+import navigateTo from "./main.js"
+import input from "./utils/input.js";
+import textarea from "./utils/textarea.js";
+import button from "./utils/button.js";
 export const PostCreationBar = () => {
   const placeholder = "want to share a story?! write here...";
   const createButton = div("create-post");

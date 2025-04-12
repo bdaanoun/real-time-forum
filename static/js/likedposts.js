@@ -1,5 +1,5 @@
 import appendPosts from "./appendPosts.js";
-import { appendUserHeader } from "./components/Headers.js";
+import { appendUserHeader } from "./Headers.js";
 import div from "./utils/div.js";
 export default async function AppendLikedPosts() {
     document.body.innerHTML = ""

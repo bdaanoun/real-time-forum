@@ -1,7 +1,7 @@
 import appendPosts from "./appendPosts.js";
-import { PostCreationBar } from "./components/createPost.js";
-import { appendUserHeader } from "./components/Headers.js";
-import div from "./components/native/div.js";
+import { PostCreationBar } from "./createPost.js";
+import { appendUserHeader } from "./Headers.js";
+import div from "./utils/div.js";
 import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 export default async function Home() {

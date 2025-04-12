@@ -1,16 +1,14 @@
-import div from "./native/div.js";
-import img from "./native/img.js";
-import { changeAuthState } from "../utils/ensureAuth.js";
-import { go } from "../router.js";
-import navigateTo from "../main.js";
-import logUserOut from "../logout.js";
+import div from "./utils/div.js";
+import img from "./utils/img.js";
+import navigateTo from "./main.js";
+import logUserOut from "./logout.js";
 
-async function getPosts(type) {
-  let icns = document.querySelectorAll("svg");
-  icns.forEach((icn) => icn.classList.remove("active"));
-  let clicked = document.querySelector(type);
-  clicked.classList.add("active");
-}
+// async function getPosts(type) {
+//   let icns = document.querySelectorAll("svg");
+//   icns.forEach((icn) => icn.classList.remove("active"));
+//   let clicked = document.querySelector(type);
+//   clicked.classList.add("active");
+// }
 function toggleIt() {
   let ul = document.querySelector(".icons");
   ul.classList.toggle("active");
@@ -96,4 +94,3 @@ export async function appendUserHeader(page = "home") {
   //   Logout();
   // });
 }
-

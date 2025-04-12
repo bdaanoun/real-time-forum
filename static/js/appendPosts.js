@@ -1,8 +1,5 @@
 import { timePassed } from "./utils/time.js";
-import Frame from "./components/Frame.js";
-//Frame
-//import { importSvg } from "../utils/index.js";
-import { reaction } from "./components/reaction.js";
+// import { reaction } from "./reaction.js";
 import div from "./utils/div.js";
 import img from "./utils/img.js";
 import navigateTo from "./main.js";
@@ -11,7 +8,7 @@ export default function appendPosts(postsContainer , posts) {
     for (const post of posts) {
         postsContainer.append(PostCard(post));
     }
-} 
+}
 
 export const Post = (postData) => {
   console.log(postData);
@@ -26,7 +23,7 @@ export const Post = (postData) => {
   const post = div("post");
   console.log(postData);
   console.log(postData.created_at);
-  
+
   return post.add(
     div("publisher").add(
         profile  ,
@@ -52,15 +49,15 @@ export const PostCard = (postData) => {
   const comment = img("comment-bubble.svg");
   comment.onclick = showPost;
   const reactionEndpoint = `/api/reactions/posts/${postData.id}/`;
-  const [like, likeOnClick] = reaction("like", postData);
-  const [dislike, dislikeOnClick] = reaction("dislike", postData);
-  likeOnClick(dislike, reactionEndpoint);
-  dislikeOnClick(like, reactionEndpoint);
+  // const [like, likeOnClick] = reaction("like", postData);
+  // const [dislike, dislikeOnClick] = reaction("dislike", postData);
+  // likeOnClick(dislike, reactionEndpoint);
+  // dislikeOnClick(like, reactionEndpoint);
 
   return div("postContainer").add(
-    Frame(Post(postData).add(readMore)),
+    (Post(postData).add(readMore)),
     div("leftBar").add(
-      div("reactionsContainer").add(like, dislike),
+      // div("reactionsContainer").add(like, dislike),
       div("comntBtn").add(comment)
     )
   );

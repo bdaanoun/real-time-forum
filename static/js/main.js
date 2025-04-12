@@ -1,4 +1,4 @@
-import CreatePost from "./components/createPost.js";
+import CreatePost from "./createPost.js";
 import AppendCreatedPosts from "./createdPosts.js";
 import Home from "./home.js";
 import AppendLikedPosts from "./likedposts.js";
