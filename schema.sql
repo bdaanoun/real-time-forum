@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     last_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    is_online BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS categories (
@@ -58,7 +59,7 @@ CREATE TABLE IF NOT EXISTS comment_reactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     comment_id INTEGER NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    reaction_type INTEGER NOT NULL CHECK (reaction_type IN (-1, 0, 1))
+    reaction_type INTEGER NOT NULL CHECK (reaction_type IN (-1, 0, 1)),
     UNIQUE(comment_id, user_id)
 );
 

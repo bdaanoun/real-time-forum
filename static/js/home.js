@@ -6,6 +6,7 @@ import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 import { offset } from "./offset.js";
 import ChatPopup from "./chat.js";
+import openWSCon from "./websockets.js";
 export default async function Home() {
   offset.reset()
   document.body.innerHTML = "";
@@ -21,6 +22,7 @@ export default async function Home() {
   
   appendPosts(postsContainer , posts)
   ChatPopup()
+  openWSCon()
   window.addEventListener("scroll", async () => {
     const scrollPosition = window.innerHeight + window.scrollY;
     const nearBottom = document.body.offsetHeight - 200;
