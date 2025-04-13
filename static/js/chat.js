@@ -20,6 +20,7 @@ export default function ChatPopup() {
 
     // Add sample content
     discussionsContainer.textContent = "Discussions go here..."
+    let users = fetch()
     usersContainer.textContent = "Users go here..."
 
     let popup = div("chat").add(
