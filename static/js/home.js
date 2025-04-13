@@ -5,6 +5,7 @@ import div from "./utils/div.js";
 import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 import { offset } from "./offset.js";
+import ChatPopup from "./chat.js";
 export default async function Home() {
   offset.reset()
   document.body.innerHTML = "";
@@ -19,7 +20,7 @@ export default async function Home() {
   console.log("m in home");
   
   appendPosts(postsContainer , posts)
-
+  ChatPopup()
   window.addEventListener("scroll", async () => {
     const scrollPosition = window.innerHeight + window.scrollY;
     const nearBottom = document.body.offsetHeight - 200;

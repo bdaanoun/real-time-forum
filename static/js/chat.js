@@ -1,83 +1,65 @@
-// This assumes you're connecting to the WebSocket server at ws://localhost:8080/api/Chat
-const socketUrl = "ws://localhost:8080/api/Chat";
-let socket;
-let username = "user1"; // You can change this or dynamically get the username from input or authentication.
+import div from "./utils/div.js"
+import createImageElement from "./utils/img.js"
 
-// Function to initialize the WebSocket connection
-function initializeWebSocket() {
-    socket = new WebSocket(`${socketUrl}?user=${username}`);
+export default function ChatPopup() {
+    let openClose = createImageElement("upDown.svg")
+    openClose.className = "upDown"
+    openClose.onclick = () => { toggleChatDisplay() }
 
-    // Handle successful connection
-    socket.onopen = () => {
-        console.log("Connected to WebSocket server.");
-        showMessage("Connected to chat!");
-    };
+    // === Toggle Buttons ===
+    const chatsBtn = div("chatTab selected", "Chats")
+    const onlineBtn = div("chatTab", "Online")
+    chatsBtn.onclick = () => showTab("chats")
+    onlineBtn.onclick = () => showTab("online")
 
-    // Handle incoming messages
-    socket.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
-        showMessage(`${msg.from}: ${msg.content}`);
-    };
+    const toggleTabs = div("toggleTabs").add(chatsBtn, onlineBtn)
 
-    // Handle errors
-    socket.onerror = (error) => {
-        console.error("WebSocket Error: ", error);
-        showMessage("Error with WebSocket connection.");
-    };
+    // === Content Containers ===
+    const discussionsContainer = div("chatTabContent chatsContent") // default shown
+    const usersContainer = div("chatTabContent onlineContent hidden")
 
-    // Handle connection close
-    socket.onclose = () => {
-        console.log("WebSocket connection closed.");
-        showMessage("Disconnected from chat.");
-    };
+    // Add sample content
+    discussionsContainer.textContent = "Discussions go here..."
+    usersContainer.textContent = "Users go here..."
+
+    let popup = div("chat").add(
+        div("MessagesHeader").add(
+            div("chatwithicon").add(
+                createImageElement("messages.svg"),
+                div("smalltext", "Chat")
+            ),
+            openClose
+        ),
+        div("chatBody hidden").add(
+            toggleTabs,
+            discussionsContainer,
+            usersContainer
+        )
+    )
+
+    document.body.append(popup)
 }
 
-// Function to send a message
-function sendMessage() {
-    const messageInput = document.getElementById("messageInput");
-    const messageContent = messageInput.value;
-    const recipient = document.getElementById("recipientInput").value;
+function toggleChatDisplay() {
+    document.querySelector(".chatBody")?.classList.toggle("hidden")
+    document.querySelector(".upDown")?.classList.toggle("rotated")
+}
 
-    if (!messageContent || !recipient) {
-        alert("Message content and recipient are required.");
-        return;
+function showTab(tab) {
+    const chatsBtn = document.querySelector(".chatTab:nth-child(1)")
+    const onlineBtn = document.querySelector(".chatTab:nth-child(2)")
+    const chatsContent = document.querySelector(".chatsContent")
+    const onlineContent = document.querySelector(".onlineContent")
+
+    if (tab === "chats") {
+        chatsBtn.classList.add("selected")
+        onlineBtn.classList.remove("selected")
+        chatsContent.classList.remove("hidden")
+        onlineContent.classList.add("hidden")
+    } else {
+        chatsBtn.classList.remove("selected")
+        onlineBtn.classList.add("selected")
+        chatsContent.classList.add("hidden")
+        onlineContent.classList.remove("hidden")
     }
-
-    const message = {
-        from: username,
-        to: recipient,
-        content: messageContent
-    };
-
-    // Send the message to the server
-    socket.send(JSON.stringify(message));
-    
-    // Clear the input field
-    messageInput.value = "";
-    showMessage(`You: ${messageContent}`);
 }
-
-// Function to display messages on the screen
-function showMessage(message) {
-    const messageList = document.getElementById("messageList");
-    const messageItem = document.createElement("li");
-    messageItem.textContent = message;
-    messageList.appendChild(messageItem);
-}
-
-// Initialize WebSocket connection when the page loads
-window.onload = () => {
-    initializeWebSocket();
-
-    // Set up event listener for sending a message
-    const sendButton = document.getElementById("sendButton");
-    sendButton.addEventListener("click", sendMessage);
-
-    // Optionally, you can listen for "Enter" key press to send messages
-    const messageInput = document.getElementById("messageInput");
-    messageInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            sendMessage();
-        }
-    });
-};
