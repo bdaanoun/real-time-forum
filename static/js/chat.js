@@ -38,6 +38,10 @@ export default function ChatPopup() {
     )
 
     document.body.append(popup)
+    let userList =  getUsersList()
+    userList.forEach(user => {
+        //usersContainer.append(createUserCard(user))
+    });
 }
 
 function toggleChatDisplay() {
@@ -62,4 +66,15 @@ function showTab(tab) {
         chatsContent.classList.add("hidden")
         onlineContent.classList.remove("hidden")
     }
+}
+async function getUsersList() {
+    let resp  = await fetch("api/GetUsers" , {
+        method  :  "GET", 
+    })
+    if (!resp.ok) {
+        console.log("unable to fetch users");
+        return
+    }
+    let userList =  await  resp.json()
+    return userList
 }
