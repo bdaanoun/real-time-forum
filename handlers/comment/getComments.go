@@ -54,7 +54,7 @@ func GetCommentsHandler(w http.ResponseWriter, r *http.Request) {
 		FROM comments c
 		JOIN users u ON c.user_id = u.id
 		WHERE c.post_id = ?
-		ORDER BY c.created_at ASC
+		ORDER BY c.created_at DESC
 	`, userID, postID)
 	if err != nil {
 		log.Println("Error fetching comments:", err)

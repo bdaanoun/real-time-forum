@@ -81,6 +81,7 @@ async function CreatePostFetch(titleInput, textInput) {
       "please provide a valid Description (minLength is 1 char)";
     return;
   }
+ 
   let res = await fetch("/api/CheckAuth");
   let id = await res.text();
 
@@ -112,9 +113,9 @@ async function CreatePostFetch(titleInput, textInput) {
       notification.remove();
     }, 3000);
     let postsContainer  = document.querySelector(".postsContainer")
-    postsContainer.prepend(PostCard(nn))
+    postsContainer.prepend(await PostCard(nn))
     document.querySelector(".postCreateView").remove();
-    back();
+    //back();
   } else {
     const notification = document.createElement("div");
     notification.classList.add("notificationError");

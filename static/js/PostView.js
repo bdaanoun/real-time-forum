@@ -84,7 +84,7 @@ const sendComment = async (postId) => {
 
     if (resp.ok) {
       const newComment = await resp.json();
-      const commentElement = renderComment(newComment);
+      const commentElement = await renderComment(newComment);
       const commentsList = document.querySelector(".commentsList");
       commentsList.prepend(commentElement);
       input.value = "";

@@ -5,16 +5,20 @@
     justify-content: flex-start;
     padding: 0px;
     gap: 16px;
-    overflow: scroll;
-    width: 900px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    width: 100%;
     margin: auto;
 }
+
 .filter {
     width: 80%;
     max-width: 900px;
-    align-self: center ;
-    overflow: scroll;
+    height: max-content;
+    align-self: center;
 }
+
 .category {
     font-family: 'Inter';
     text-align: center;
