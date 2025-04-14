@@ -1,6 +1,6 @@
+import back  from "./router.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
-
 export default function ChatPopup() {
     let openClose = createImageElement("upDown.svg")
     openClose.className = "upDown"
@@ -40,6 +40,15 @@ export default function ChatPopup() {
 
     document.body.append(popup)
     let userList =  getUsersList()
+
+
+    document.addEventListener("click", (e) => {
+        const chatBody = document.querySelector(".chatBody")
+        if (!popup.contains(e.target)) {            
+        chatBody?.classList.add("hidden")
+        }
+    })
+    
     userList.forEach(user => {
         //usersContainer.append(createUserCard(user))
     });
