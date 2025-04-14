@@ -65,3 +65,51 @@
 .hidden {
   display: none;
 }
+
+/* user Online style */
+
+.userAvatar{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.userCardHeader{
+  display: flex;
+  z-index: 90;
+  position: relative;
+  align-items: center;
+}
+
+.nickname{
+  font-weight: bold;
+}
+.userCard{
+  margin: 10px 0px;
+  padding: 5px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: start;
+  gap: 8px;
+}
+
+.userCard:hover{
+  background-color: #ffffff1f;
+}
+
+.statusDot {
+  position: absolute;
+  z-index: 90;
+  width: 9px;
+  height: 9px;
+  bottom: 7px;
+  left: 7px;
+  border-radius: 50%;
+}
+
+.statusDot.offlineDot{
+  background-color: red;
+}
+.statusDot.onlineDot{
+  background-color: green;
+}
