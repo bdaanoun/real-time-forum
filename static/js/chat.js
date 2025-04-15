@@ -150,13 +150,14 @@ async function oneToOneChat(user) {
                 chatMessages.append(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
             }
         })
-    }else {
+    } else {
         chatMessages.add("no messages ")
     }
     // .add(
     //     div("message",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april")),
     //     div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april"))
     // )
+    let myInput = input("text", "Type a message...")
     let chatOne = div("chatWithUser").add(
         div("discussionContainer").add(div('chatHead').add(
             back,
@@ -167,8 +168,8 @@ async function oneToOneChat(user) {
                 chatMessages
             ),),
         div("chatInputArea").add(
-            input("text", "Type a message..."),
-            button("send", () => sendMessage(user))
+            myInput , 
+            button("send", () => sendMessage(profileData.nickname , user.nickname , myInput.value))
         )
     );
     back.onclick = () => {
@@ -199,7 +200,18 @@ async function fetchPrivateMessage(user) {
     }
 }
 
-function sendMessage() {
-    console.log("hello");
+function sendMessage(me ,  to  , content) {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+        console.error("WebSocket is not open.");
+        return;
+    }
 
+    const message = {
+        content: content,
+        sent_at:null,
+        sender_nickname:me,
+        receiver_nickname: to
+    };
+
+    socket.send(JSON.stringify(message));
 }
