@@ -3,6 +3,7 @@ import button from "./utils/button.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
 import input from "./utils/input.js"
+import { socket } from "./websockets.js"
 export default async function ChatPopup() {
     let openClose = createImageElement("upDown.svg")
     openClose.className = "upDown"
@@ -56,6 +57,11 @@ export default async function ChatPopup() {
             usersContainer.append(createUserCard(user))
         }
     });
+
+    userList.forEach(user => {
+        discussionsContainer.append(createUserCard(user))
+    })
+
 
 }
 
@@ -133,7 +139,7 @@ function oneToOneChat(user) {
             ),),
         div("chatInputArea").add(
             input("text", "Type a message..."),
-            button("send", sendMessage)
+            button("send", () => sendMessage(user))
         )
     );
     back.onclick = () => {
@@ -143,11 +149,31 @@ function oneToOneChat(user) {
     }
     document.querySelector('.chat').append(chatOne);
 
-    // let closeChat= document.querySelector('.closeChat')
-    // closeChat.onclick = () => {chatOne.classList.add("hidden")}
 }
 
-function sendMessage() {
-    console.log("hello");
+function sendMessage(user) {
+    let chatEl = document.querySelector('.chatInputArea input')
+    console.log(chatEl);
+
+    let chatInput = chatEl.value.trim()
+    console.log(chatInput);
+
+    if (chatInput === "") return
+    console.log(chatInput);
+
+
+    let msg = {
+        from: profileData.Nickname,
+        to: user,
+        content: chatInput
+    }
+    socket.send(JSON.stringify(msg))
+
+    document.querySelector('.chatMessages').add(
+        div('message me').add(
+            div('MsgContent', chatInput)
+        ),
+
+    )
 
 }

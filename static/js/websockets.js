@@ -1,11 +1,10 @@
 import { profileData } from "./Headers.js";
 
+export let socket
 export default function openWSCon() {
-  console.log("in ws");
-//const socket = new WebSocket(`ws://${window.location.host}/ws`)
+  socket = new WebSocket(`ws://${window.location.host}/api/Chat?nickname=${profileData.Nickname}`);
   console.log(window.location.host);
-  
-  const socket = new WebSocket(`ws://${window.location.host}/api/Chat?nickname=${profileData.Nickname}`);
+
 
   socket.onopen = function () {
     console.log("WebSocket connection established!");
@@ -37,13 +36,13 @@ export default function openWSCon() {
   };
 }
 function updateUserStatus(nickName, isOnline) {
-  console.log(nickName ,  profileData.Nickname ,  isOnline);
+  console.log(nickName, profileData.Nickname, isOnline);
   if (nickName === profileData.Nickname) {
     return
   }
   let status = document.querySelector(`.${nickName}`)
   console.log(status);
-  
+
   if (isOnline) {
     status.classList.add("online")
   } else {
