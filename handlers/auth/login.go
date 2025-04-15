@@ -70,7 +70,7 @@ func LogUser(w http.ResponseWriter, r *http.Request) {
 		Value:    sessionID,
 		Expires:  expiration,
 		HttpOnly: true, // Make it HTTP-only to prevent client-side access
-		Secure:   true, // Ensure it is only sent over HTTPS
+		Secure:   false, // Ensure it is only sent over HTTPS
 		Path:     "/",
 	})
 

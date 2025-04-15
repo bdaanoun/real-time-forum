@@ -28,7 +28,6 @@ async function route(data) {
         if (url === "/login") {
             login()
         } else {
-
             register()
         }
         return

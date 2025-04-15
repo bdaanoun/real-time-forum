@@ -2,8 +2,10 @@ import { profileData } from "./Headers.js";
 
 export default function openWSCon() {
   console.log("in ws");
-
-  const socket = new WebSocket(`ws://localhost:8080/api/Chat?nickname=${profileData.Nickname}`);
+//const socket = new WebSocket(`ws://${window.location.host}/ws`)
+  console.log(window.location.host);
+  
+  const socket = new WebSocket(`ws://${window.location.host}/api/Chat?nickname=${profileData.Nickname}`);
 
   socket.onopen = function () {
     console.log("WebSocket connection established!");
