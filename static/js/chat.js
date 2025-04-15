@@ -55,10 +55,30 @@ export default async function ChatPopup() {
         if (user.is_online) {
             usersContainer.append(createUserCard(user))
         }
+        discussionsContainer.append(createUserCard2(user))
     });
 
 }
+function createUserCard2(user) {
+    const avatar = createImageElement("avatar.svg")
+    avatar.className = "userAvatar"
 
+    const statusDot = document.createElement(`span`)
+    statusDot.className = user.is_online ? `statusDot  ${user.nickname} online` : `statusDot  ${user.nickname}`
+
+    const header = div("userCardHeader").add(avatar, statusDot)
+    const name = div("textsContainer").add(div("nickname", user.nickname), user.last_message_content ? user.last_message_content : "no messages")
+    const userCard = div(`userCard`).add(header, name)
+
+    userCard.onclick = () => {
+        document.querySelector(".chatBody").classList.add("hidden")
+        oneToOneChat(user)
+        console.log(`Starting chat with ${user.nickname}`)
+        // Chat logic here
+    }
+
+    return userCard
+}
 function toggleChatDisplay() {
     document.querySelector(".chatBody")?.classList.toggle("hidden")
     document.querySelector(".upDown")?.classList.toggle("rotated")
@@ -116,9 +136,26 @@ function createUserCard(user) {
     return userCard
 }
 
-function oneToOneChat(user) {
+async function oneToOneChat(user) {
+    let messages = await fetchPrivateMessage(user)
     let back = createImageElement("back.png")
     back.classList.add("closeChat")
+    let chatMessages = div("chatMessages")
+    if (messages) {
+        messages.forEach((msg) => {
+            if (msg.sender_nickname === user.nickname) {
+                chatMessages.append(div("message",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+            } else {
+                chatMessages.append(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+            }
+        })
+    }else {
+        chatMessages.add("no messages ")
+    }
+    // .add(
+    //     div("message",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april")),
+    //     div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april"))
+    // )
     let chatOne = div("chatWithUser").add(
         div("discussionContainer").add(div('chatHead').add(
             back,
@@ -126,10 +163,7 @@ function oneToOneChat(user) {
             div("nickname", user.nickname),
         ),
             div('conversationBody').add(
-                div("chatMessages").add(
-                    div("message",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april")),
-                    div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april"))
-                )
+                chatMessages
             ),),
         div("chatInputArea").add(
             input("text", "Type a message..."),
@@ -145,6 +179,23 @@ function oneToOneChat(user) {
 
     // let closeChat= document.querySelector('.closeChat')
     // closeChat.onclick = () => {chatOne.classList.add("hidden")}
+}
+async function fetchPrivateMessage(user) {
+    try {
+        let resp = await fetch(`api/GetMessages?nickname=${profileData.Nickname}&otherser=${user.nickname}`, {
+            method: "GET",
+        });
+
+        if (!resp.ok) {
+            console.log("Unable to fetch messages");
+            return;
+        }
+
+        let messages = await resp.json();
+        return messages;
+    } catch (error) {
+        console.error("Error fetching messages:", error);
+    }
 }
 
 function sendMessage() {

@@ -1,11 +1,13 @@
 package chat
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	database "forum/handlers/dataBase"
 
@@ -14,7 +16,7 @@ import (
 
 type StatusChangeMessage struct {
 	MessageType string `json:"messageType"`
-	UserName      string `json:"userName"`
+	UserName    string `json:"userName"`
 	IsOnline    bool   `json:"isOnline"`
 }
 
@@ -25,8 +27,10 @@ var (
 )
 
 type UserStatus struct {
-	Nickname string `json:"nickname"`
-	IsOnline bool   `json:"is_online"`
+	Nickname           string     `json:"nickname"`
+	IsOnline           bool       `json:"is_online"`
+	LastMessageContent *string    `json:"last_message_content"`
+	LastMessageSentAt  *time.Time `json:"last_message_sent_at"`
 }
 
 type Message struct {
@@ -34,14 +38,47 @@ type Message struct {
 	To      string `json:"to"`
 	Content string `json:"content"`
 }
-
 func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
 	currentNickname := r.URL.Query().Get("nickname")
 	if currentNickname == "" {
 		http.Error(w, "Missing nickname parameter", http.StatusBadRequest)
 		return
 	}
-	rows, err := database.ForumDB.Query("SELECT nickname FROM users")
+
+	query := `
+		SELECT
+			u.nickname,
+			(
+				SELECT
+					m.content
+				FROM
+					messages m
+				WHERE
+					(m.sender_id = cu.id AND m.receiver_id = u.id) OR (m.sender_id = u.id AND m.receiver_id = cu.id)
+				ORDER BY
+					m.sent_at DESC
+				LIMIT 1
+			) AS last_message_content,
+			(
+				SELECT
+					m.sent_at
+				FROM
+					messages m
+				WHERE
+					(m.sender_id = cu.id AND m.receiver_id = u.id) OR (m.sender_id = u.id AND m.receiver_id = cu.id)
+				ORDER BY
+					m.sent_at DESC
+				LIMIT 1
+			) AS last_message_sent_at
+		FROM
+			users u
+		JOIN
+			users cu ON cu.nickname = ?
+		WHERE
+			u.nickname <> ?;
+	`
+
+	rows, err := database.ForumDB.Query(query, currentNickname, currentNickname)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
@@ -55,11 +92,15 @@ func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var nickname string
-		err := rows.Scan(&nickname)
+		var lastMessageContent sql.NullString
+		var lastMessageSentAt sql.NullTime
+
+		err := rows.Scan(&nickname, &lastMessageContent, &lastMessageSentAt)
 		if err != nil {
 			continue
 		}
 
+		// Skip self (already filtered in WHERE clause, but just in case)
 		if nickname == currentNickname {
 			continue
 		}
@@ -67,15 +108,28 @@ func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
 		connections, ok := clients[nickname]
 		isOnline := ok && len(connections) > 0
 
+		var messageContentPtr *string
+		if lastMessageContent.Valid {
+			messageContentPtr = &lastMessageContent.String
+		}
+
+		var messageSentAtPtr *time.Time
+		if lastMessageSentAt.Valid {
+			messageSentAtPtr = &lastMessageSentAt.Time
+		}
+
 		userList = append(userList, UserStatus{
-			Nickname: nickname,
-			IsOnline: isOnline,
+			Nickname:           nickname,
+			IsOnline:           isOnline,
+			LastMessageContent: messageContentPtr,
+			LastMessageSentAt:  messageSentAtPtr,
 		})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(userList)
 }
+
 
 func saveMessageToDB(senderID, receiverID int, content string) error {
 	query := `INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)`
@@ -137,7 +191,7 @@ func handleNewConnection(userName string, conn *websocket.Conn) {
 	clients[userName] = append(clients[userName], conn)
 	msg := StatusChangeMessage{
 		MessageType: "statusChange",
-		UserName:      userName,
+		UserName:    userName,
 		IsOnline:    true,
 	}
 	broadcastToAll(msg)
@@ -186,7 +240,7 @@ func removeConnection(username string, conn *websocket.Conn) {
 		delete(clients, username)
 		msg := StatusChangeMessage{
 			MessageType: "statusChange",
-			UserName:      username,
+			UserName:    username,
 			IsOnline:    false,
 		}
 		broadcastToAll(msg)

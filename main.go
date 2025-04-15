@@ -25,8 +25,9 @@ func setupHandlers() {
 	http.HandleFunc("/api/Register", auth.RegisterUser)
 	http.HandleFunc("/api/Login", auth.LogUser)
 	http.HandleFunc("/api/Logout", auth.LogoutHandler)
-	http.HandleFunc("/api/Chat", chat.ChatHandler)
 
+	http.HandleFunc("/api/Chat", chat.ChatHandler)
+	http.HandleFunc("/api/GetMessages" , chat.GetMessagesHandler)
 	http.HandleFunc("/api/GetUsers", chat.GetUsersListHandler)
 
 	// posts
