@@ -107,7 +107,6 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 		return
 	}
-
 	handleNewConnection(username, conn)
 	fmt.Println(username, "connected")
 

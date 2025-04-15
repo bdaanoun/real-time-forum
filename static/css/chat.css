@@ -105,9 +105,8 @@
 
 .userCardHeader {
   display: flex;
-  z-index: 90;
-  position: relative;
   align-items: center;
+  position: relative;
 }
 
 .nickname {
@@ -120,6 +119,7 @@
   border-radius: 12px;
   cursor: pointer;
   display: flex;
+  align-items: center;
   justify-content: start;
   gap: 8px;
 }
@@ -201,6 +201,7 @@
 }
 
 .nickname {
+  height: max-content;
   font-weight: bold;
   font-size: 16px;
 }

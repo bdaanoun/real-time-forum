@@ -43,7 +43,6 @@ export default async function ChatPopup() {
     document.body.append(popup)
     let userList = await getUsersList()
 
-
     document.addEventListener("click", (e) => {
         const chatBody = document.querySelector(".chatBody")
         if (!popup.contains(e.target) && openClose.classList.contains("rotated")) {
@@ -53,7 +52,9 @@ export default async function ChatPopup() {
     })
 
     userList.forEach(user => {
-        usersContainer.append(createUserCard(user))
+        if (user.is_online) {
+            usersContainer.append(createUserCard(user))
+        }
     });
 
 }
@@ -103,7 +104,6 @@ function createUserCard(user) {
 
     const header = div("userCardHeader").add(avatar, statusDot)
     const name = div("nickname", user.nickname)
-
     const userCard = div(`userCard`).add(header, name)
 
     userCard.onclick = () => {
@@ -127,8 +127,8 @@ function oneToOneChat(user) {
         ),
             div('conversationBody').add(
                 div("chatMessages").add(
-                    div("message", ).add(div("MsgContent" , "Hello! How are you?") , div("date" ,  "15 april")),
-                    div("message me",).add(div("MsgContent" , "Hello! How are you?") , div("date" ,  "15 april"))
+                    div("message",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april")),
+                    div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april"))
                 )
             ),),
         div("chatInputArea").add(
@@ -138,7 +138,7 @@ function oneToOneChat(user) {
     );
     back.onclick = () => {
         document.querySelector(".chatBody").classList.remove("hidden")
-        
+
         chatOne.classList.add("hidden")
     }
     document.querySelector('.chat').append(chatOne);
