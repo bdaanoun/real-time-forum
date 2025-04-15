@@ -104,7 +104,7 @@ function createUserCard(user) {
     const header = div("userCardHeader").add(avatar, statusDot)
     const name = div("nickname", user.nickname)
 
-    const userCard = div(`userCard ${user.nickname}`).add(header, name)
+    const userCard = div(`userCard`).add(header, name)
 
     userCard.onclick = () => {
         document.querySelector(".chatBody").classList.add("hidden")

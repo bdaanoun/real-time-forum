@@ -2,7 +2,7 @@ import { profileData } from "./Headers.js";
 
 export default function openWSCon() {
   console.log("in ws");
-  
+
   const socket = new WebSocket(`ws://localhost:8080/api/Chat?nickname=${profileData.Nickname}`);
 
   socket.onopen = function () {
@@ -35,12 +35,13 @@ export default function openWSCon() {
   };
 }
 function updateUserStatus(nickName, isOnline) {
-  console.log(nickName);
+  console.log(nickName ,  profileData.Nickname ,  isOnline);
   if (nickName === profileData.Nickname) {
     return
   }
- let status = document.querySelector(`.${nickName}`)
- 
+  let status = document.querySelector(`.${nickName}`)
+  console.log(status);
+  
   if (isOnline) {
     status.classList.add("online")
   } else {
