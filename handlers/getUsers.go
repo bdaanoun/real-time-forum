@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"forum/handlers/auth"
 	database "forum/handlers/dataBase"
 )
 
@@ -13,7 +14,12 @@ type User struct {
 }
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := database.ForumDB.Query("SELECT nickname, is_online FROM users")
+	userID, err := auth.ValidateSession(r, database.ForumDB)
+	if err != nil {
+		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		return
+	}
+	rows, err := database.ForumDB.Query("SELECT nickname, is_online FROM users WHERE id!= ?" ,  userID)
 	if err != nil {
 		http.Error(w, "Failed to fetch users", http.StatusInternalServerError)
 		return

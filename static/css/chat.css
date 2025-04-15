@@ -12,7 +12,9 @@
   border-radius: 12px 12px 0 0;
   gap: 16px;
 }
-
+.chatWithUser.hidden {
+  display: none;
+}
 .chatBody {
   height: 500px;
 }

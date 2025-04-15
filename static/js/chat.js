@@ -1,4 +1,5 @@
 import back from "./router.js"
+import button from "./utils/button.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
 import input from "./utils/input.js"
@@ -45,8 +46,9 @@ export default async function ChatPopup() {
 
     document.addEventListener("click", (e) => {
         const chatBody = document.querySelector(".chatBody")
-        if (!popup.contains(e.target)) {
+        if (!popup.contains(e.target) && openClose.classList.contains("rotated")) {
             chatBody?.classList.add("hidden")
+            openClose.classList.remove("rotated")
         }
     })
 
@@ -59,7 +61,7 @@ export default async function ChatPopup() {
         .filter(user => user.is_online)
         .forEach(user => {
             usersContainer.append(createUserCard(user))
-        })
+    })
 
 }
 
@@ -121,12 +123,15 @@ function createUserCard(user) {
 }
 
 function oneToOneChat(user) {
+    let  back = div("closeChat", "✖")
+    back.onclick= ()=> {
+        chatOne.classList.add("hidden")
+    }
     let chatOne = div("chatWithUser").add(
-
         div('chatHead').add(
             createImageElement('avatar.svg'),
             div("nickname", user.nickname),
-            div("closeChat", "✖")
+            back
         ),
         div('conversationBody').add(
             div("chatMessages").add(
@@ -136,12 +141,17 @@ function oneToOneChat(user) {
         ),
         div("chatInputArea").add(
             input("text", "Type a message..."),
+            button("send" , sendMessage)
         )
     );
 
     document.querySelector('.chatBody').append(chatOne);
 
-    let closeChat= document.querySelector('.closeChat')
-    closeChat.onclick = () => chatOne.remove()
+    // let closeChat= document.querySelector('.closeChat')
+    // closeChat.onclick = () => {chatOne.classList.add("hidden")}
 }
 
+function  sendMessage () {
+    console.log("hello");
+    
+}
