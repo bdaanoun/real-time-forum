@@ -113,3 +113,64 @@
 .statusDot.onlineDot{
   background-color: green;
 }
+
+
+
+/* chatWithUser */
+
+
+.chatWithUser {
+  position: absolute;
+  z-index: 16;
+  display: flex;
+  flex-direction: column; 
+  width: 90%;
+  height: 310px;
+  border: 1px solid #f6f3f3;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff1f;
+}
+
+.chatHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #6d6d6d;
+  border-bottom: 1px solid #ddd;
+}
+
+.chatHead img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.nickname {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Chat content */
+.conversationBody {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chatMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.message {
+  background-color: #dcf8c6;
+  padding: 8px 12px;
+  border-radius: 16px;
+  max-width: 70%;
+  align-self: flex-start;
+}

@@ -1,6 +1,7 @@
 import back from "./router.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
+import input from "./utils/input.js"
 export default async function ChatPopup() {
     let openClose = createImageElement("upDown.svg")
     openClose.className = "upDown"
@@ -40,9 +41,6 @@ export default async function ChatPopup() {
 
     document.body.append(popup)
     let userList = await getUsersList()
-
-    console.log('ussrLis', userList);
-
 
 
     document.addEventListener("click", (e) => {
@@ -114,9 +112,36 @@ function createUserCard(user) {
     const userCard = div("userCard").add(header, name)
 
     userCard.onclick = () => {
+        oneToOneChat(user)
         console.log(`Starting chat with ${user.nickname}`)
         // Chat logic here
     }
 
     return userCard
 }
+
+function oneToOneChat(user) {
+    let chatOne = div("chatWithUser").add(
+
+        div('chatHead').add(
+            createImageElement('avatar.svg'),
+            div("nickname", user.nickname),
+            div("closeChat", "✖")
+        ),
+        div('conversationBody').add(
+            div("chatMessages").add(
+                div("message", "Hello! How are you?"),
+                div("message", "I'm good, thanks!")
+            )
+        ),
+        div("chatInputArea").add(
+            input("text", "Type a message..."),
+        )
+    );
+
+    document.querySelector('.chatBody').append(chatOne);
+
+    let closeChat= document.querySelector('.closeChat')
+    closeChat.onclick = () => chatOne.remove()
+}
+
