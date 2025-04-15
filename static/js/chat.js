@@ -133,8 +133,9 @@ function oneToOneChat(user) {
         ),
             div('conversationBody').add(
                 div("chatMessages").add(
-                    div("message",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april")),
-                    div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april"))
+                    //forEach ela msg
+                    div("message",).add(div("MsgContent", "Hello! How are you?"), div("date hidden", "15 april")),
+                    div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date hidden", "15 april"))
                 )
             ),),
         div("chatInputArea").add(
@@ -171,9 +172,21 @@ function sendMessage(user) {
 
     document.querySelector('.chatMessages').add(
         div('message me').add(
-            div('MsgContent', chatInput)
+            div('MsgContent', chatInput),
+            div('date hidden', new Date().toLocaleTimeString())
         ),
-
     )
+
+    let msgs = document.querySelectorAll('.MsgContent');
+    if (msgs) {        
+        msgs.forEach(msg => {
+            msg.addEventListener("click", () => {
+                let date = msg.nextElementSibling;
+                 date.classList.toggle('hidden')
+            });
+        });
+        
+    }
+
 
 }
