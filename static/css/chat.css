@@ -12,11 +12,13 @@
   border-radius: 12px 12px 0 0;
   gap: 16px;
 }
+
 .chatWithUser.hidden {
   display: none;
 }
+
 .chatBody {
-  height: 500px;
+  min-height: 400px;
 }
 
 .chatBody.hidden {
@@ -64,28 +66,55 @@
   opacity: 1;
 }
 
+.MsgContent {
+  background-color: #ffffff11;
+  padding: 8px 12px;
+
+  border-radius: 16px;
+}
+
+.message {
+  align-self: flex-start;
+  max-width: 70%;
+}
+
+.message.me .MsgContent {
+  background: #0071E3;
+}
+
+.message.me {
+  align-self: flex-end;
+}
+.date {
+  font-size: smaller;
+}
+.date.hidden {
+  display: none;
+}
 .hidden {
   display: none;
 }
 
 /* user Online style */
 
-.userAvatar{
+.userAvatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
-.userCardHeader{
+
+.userCardHeader {
   display: flex;
   z-index: 90;
   position: relative;
   align-items: center;
 }
 
-.nickname{
+.nickname {
   font-weight: bold;
 }
-.userCard{
+
+.userCard {
   margin: 10px 0px;
   padding: 5px;
   border-radius: 12px;
@@ -95,7 +124,7 @@
   gap: 8px;
 }
 
-.userCard:hover{
+.userCard:hover {
   background-color: #ffffff1f;
 }
 
@@ -109,44 +138,66 @@
   border-radius: 50%;
 }
 
-.statusDot.offlineDot{
+.statusDot {
   background-color: red;
 }
-.statusDot.onlineDot{
+
+.statusDot.online{
   background-color: green;
 }
 
 
 
-/* chatWithUser */
-
-
 .chatWithUser {
-  position: absolute;
-  z-index: 16;
   display: flex;
-  flex-direction: column; 
-  width: 90%;
-  height: 310px;
-  border: 1px solid #f6f3f3;
-  border-radius: 8px;
+  flex-direction: column;
+  flex-grow: 1;
   overflow: hidden;
-  background-color: #ffffff1f;
+  align-self: stretch;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 400px;
+}
+
+.discussionContainer {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
 }
 
 .chatHead {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px;
-  background-color: #6d6d6d;
-  border-bottom: 1px solid #ddd;
+  padding: 4px;
+}
+
+.chatInputArea {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.chatInputArea input {
+  flex-grow: 1;
+  min-width: auto;
+  background-color: #ffffff0c;
+}
+
+.chatInputArea input :focus {
+  border: none;
 }
 
 .chatHead img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+}
+
+.chatHead .closeChat {
+  height: 16px;
+  width: 16px;
 }
 
 .nickname {
@@ -156,7 +207,7 @@
 
 /* Chat content */
 .conversationBody {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -166,13 +217,5 @@
 .chatMessages {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.message {
-  background-color: #dcf8c6;
-  padding: 8px 12px;
-  border-radius: 16px;
-  max-width: 70%;
-  align-self: flex-start;
+  gap: 4px;
 }

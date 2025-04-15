@@ -22,15 +22,15 @@ function ToggleDisplay() {
   }
 }
 
-
+export let profileData
 async function fetchProfile() {
   try {
     const response = await fetch("/api/Profile", { method: "GET" });
     if (!response.ok) {
       throw new Error("Failed to fetch: " + response.statusText);
     }
-    const data = await response.json();
-    return data;
+    profileData = await response.json();
+    return profileData;
   } catch (error) {
     console.error("Error fetching user profile:", error);
   }

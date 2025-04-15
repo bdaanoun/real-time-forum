@@ -1,4 +1,4 @@
-import back from "./router.js"
+import { profileData } from "./Headers.js"
 import button from "./utils/button.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
@@ -24,7 +24,11 @@ export default async function ChatPopup() {
     // discussionsContainer.textContent = "Discussions go here..."
 
     // usersContainer.textContent = "Users go here..."
-
+    let chatBody = div("chatBody").add(
+        toggleTabs,
+        discussionsContainer,
+        usersContainer
+    )
     let popup = div("chat").add(
         div("MessagesHeader").add(
             div("chatwithicon").add(
@@ -33,11 +37,7 @@ export default async function ChatPopup() {
             ),
             openClose
         ),
-        div("chatBody hidden").add(
-            toggleTabs,
-            discussionsContainer,
-            usersContainer
-        )
+        chatBody
     )
 
     document.body.append(popup)
@@ -53,15 +53,8 @@ export default async function ChatPopup() {
     })
 
     userList.forEach(user => {
-        discussionsContainer.append(createUserCard(user))
+        usersContainer.append(createUserCard(user))
     });
-
-    // this is only for online users 
-    userList
-        .filter(user => user.is_online)
-        .forEach(user => {
-            usersContainer.append(createUserCard(user))
-    })
 
 }
 
@@ -89,7 +82,7 @@ function showTab(tab) {
     }
 }
 async function getUsersList() {
-    let resp = await fetch("api/GetUsers", {
+    let resp = await fetch(`api/GetUsers?nickname=${profileData.Nickname}`, {
         method: "GET",
     })
     if (!resp.ok) {
@@ -105,15 +98,16 @@ function createUserCard(user) {
     const avatar = createImageElement("avatar.svg")
     avatar.className = "userAvatar"
 
-    const statusDot = document.createElement("span")
-    statusDot.className = user.is_online ? "statusDot onlineDot" : "statusDot offlineDot"
+    const statusDot = document.createElement(`span`)
+    statusDot.className = user.is_online ? `statusDot  ${user.nickname} online` : `statusDot  ${user.nickname}`
 
     const header = div("userCardHeader").add(avatar, statusDot)
     const name = div("nickname", user.nickname)
 
-    const userCard = div("userCard").add(header, name)
+    const userCard = div(`userCard ${user.nickname}`).add(header, name)
 
     userCard.onclick = () => {
+        document.querySelector(".chatBody").classList.add("hidden")
         oneToOneChat(user)
         console.log(`Starting chat with ${user.nickname}`)
         // Chat logic here
@@ -123,35 +117,37 @@ function createUserCard(user) {
 }
 
 function oneToOneChat(user) {
-    let  back = div("closeChat", "✖")
-    back.onclick= ()=> {
-        chatOne.classList.add("hidden")
-    }
+    let back = createImageElement("back.png")
+    back.classList.add("closeChat")
     let chatOne = div("chatWithUser").add(
-        div('chatHead').add(
+        div("discussionContainer").add(div('chatHead').add(
+            back,
             createImageElement('avatar.svg'),
             div("nickname", user.nickname),
-            back
         ),
-        div('conversationBody').add(
-            div("chatMessages").add(
-                div("message", "Hello! How are you?"),
-                div("message", "I'm good, thanks!")
-            )
-        ),
+            div('conversationBody').add(
+                div("chatMessages").add(
+                    div("message", ).add(div("MsgContent" , "Hello! How are you?") , div("date" ,  "15 april")),
+                    div("message me",).add(div("MsgContent" , "Hello! How are you?") , div("date" ,  "15 april"))
+                )
+            ),),
         div("chatInputArea").add(
             input("text", "Type a message..."),
-            button("send" , sendMessage)
+            button("send", sendMessage)
         )
     );
-
-    document.querySelector('.chatBody').append(chatOne);
+    back.onclick = () => {
+        document.querySelector(".chatBody").classList.remove("hidden")
+        
+        chatOne.classList.add("hidden")
+    }
+    document.querySelector('.chat').append(chatOne);
 
     // let closeChat= document.querySelector('.closeChat')
     // closeChat.onclick = () => {chatOne.classList.add("hidden")}
 }
 
-function  sendMessage () {
+function sendMessage() {
     console.log("hello");
-    
+
 }

@@ -1,20 +1,49 @@
-export default function openWSCon() {
-    const socket = new WebSocket('ws://localhost:8080/api/Chat'); 
+import { profileData } from "./Headers.js";
 
-    socket.onopen = function () {
-      console.log("WebSocket connection established!");
-      socket.send("Hello Server!");
-    };
-    
-    socket.onmessage = function (event) {
-      console.log("Message from server:", event.data);
-    };
-    
-    socket.onclose = function () {
-      console.log("WebSocket connection closed.");
-    };
-    
-    socket.onerror = function (error) {
-      console.error("WebSocket error:", error);
-    };    
+export default function openWSCon() {
+  console.log("in ws");
+  
+  const socket = new WebSocket(`ws://localhost:8080/api/Chat?nickname=${profileData.Nickname}`);
+
+  socket.onopen = function () {
+    console.log("WebSocket connection established!");
+    //socket.send("Hello Server!");
+  };
+
+  socket.onmessage = function (event) {
+    try {
+      const data = JSON.parse(event.data);
+
+      if (data.messageType === "statusChange") {
+        console.log("Status changed:", data);
+        const nickName = data.userName;
+        const isOnline = data.isOnline;
+        updateUserStatus(nickName, isOnline);
+      }
+
+    } catch (err) {
+      console.error("Failed to parse WebSocket message:", err);
+    }
+  };
+
+  socket.onclose = function () {
+    console.log("WebSocket connection closed.");
+  };
+
+  socket.onerror = function (error) {
+    console.error("WebSocket error:", error);
+  };
+}
+function updateUserStatus(nickName, isOnline) {
+  console.log(nickName);
+  if (nickName === profileData.Nickname) {
+    return
+  }
+ let status = document.querySelector(`.${nickName}`)
+ 
+  if (isOnline) {
+    status.classList.add("online")
+  } else {
+    status.classList.remove("online")
+  }
 }
