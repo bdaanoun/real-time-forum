@@ -3,6 +3,7 @@ import button from "./utils/button.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
 import input from "./utils/input.js"
+import { socket } from "./websockets.js"
 export default async function ChatPopup() {
     let openClose = createImageElement("upDown.svg")
     openClose.className = "upDown"
@@ -167,7 +168,7 @@ async function oneToOneChat(user) {
             ),),
         div("chatInputArea").add(
             input("text", "Type a message..."),
-            button("send", sendMessage)
+            button("send", () => sendMessage(user))
         )
     );
     back.onclick = () => {
