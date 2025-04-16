@@ -42,10 +42,12 @@ function updateUserStatus(nickName, isOnline) {
   }
   let status = document.querySelector(`.${nickName}`)
   console.log(status);
-
+  let userCard = document.querySelector(`.userCard.${nickName}`)
   if (isOnline) {
     status.classList.add("online")
+    userCard.classList.remove("hidden")
   } else {
     status.classList.remove("online")
+    userCard.classList.add("hidden")
   }
 }

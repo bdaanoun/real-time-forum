@@ -136,16 +136,14 @@
   bottom: 7px;
   left: 7px;
   border-radius: 50%;
-}
-
-.statusDot {
   background-color: red;
 }
-
-.statusDot.online{
+.online{
   background-color: green;
 }
-
+.hidden {
+  display: none;
+}
 
 
 .chatWithUser {

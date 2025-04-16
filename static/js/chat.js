@@ -53,9 +53,8 @@ export default async function ChatPopup() {
     })
 
     userList.forEach(user => {
-        if (user.is_online) {
-            usersContainer.append(createUserCard(user))
-        }
+
+        usersContainer.append(createUserCard(user))
         discussionsContainer.append(createUserCard2(user))
     });
 
@@ -125,7 +124,7 @@ function createUserCard(user) {
 
     const header = div("userCardHeader").add(avatar, statusDot)
     const name = div("nickname", user.nickname)
-    const userCard = div(`userCard`).add(header, name)
+    const userCard = div(`userCard ${user.nickname} ${user.is_online? "" : "hidden"}`).add(header, name)
 
     userCard.onclick = () => {
         document.querySelector(".chatBody").classList.add("hidden")
@@ -168,8 +167,8 @@ async function oneToOneChat(user) {
                 chatMessages
             ),),
         div("chatInputArea").add(
-            myInput , 
-            button("send", () => sendMessage(profileData.nickname , user.nickname , myInput.value))
+            myInput,
+            button("send", () => sendMessage(profileData.nickname, user.nickname, myInput.value))
         )
     );
     back.onclick = () => {
@@ -200,7 +199,7 @@ async function fetchPrivateMessage(user) {
     }
 }
 
-function sendMessage(me ,  to  , content) {
+function sendMessage(me, to, content) {
     if (!socket || socket.readyState !== WebSocket.OPEN) {
         console.error("WebSocket is not open.");
         return;
@@ -208,8 +207,8 @@ function sendMessage(me ,  to  , content) {
 
     const message = {
         content: content,
-        sent_at:null,
-        sender_nickname:me,
+        sent_at: null,
+        sender_nickname: me,
         receiver_nickname: to
     };
 
