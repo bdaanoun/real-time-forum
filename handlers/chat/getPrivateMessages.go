@@ -6,6 +6,7 @@ import (
 	"sort"
 	"time"
 
+	"forum/handlers/auth"
 	database "forum/handlers/dataBase"
 )
 
@@ -17,7 +18,17 @@ type Message2 struct {
 }
 
 func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
-	nickname := r.URL.Query().Get("nickname")
+	userID, err := auth.ValidateSession(r, database.ForumDB)
+	if err != nil {
+		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		return
+	}
+
+	nickname , err := getUserName(userID)
+	if err != nil {
+		http.Error(w, "unable to extract nickname from session", http.StatusInternalServerError)
+		return
+	}
 	otherNickname := r.URL.Query().Get("otherser")
 
 	if nickname == "" || otherNickname == "" {
@@ -59,7 +70,6 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 		messages = append(messages, msg)
 	}
 
-	// Optional: Sort from oldest to newest
 	sort.Slice(messages, func(i, j int) bool {
 		return messages[i].SentAt.Before(messages[j].SentAt)
 	})
