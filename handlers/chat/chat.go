@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sync"
 
+	"forum/handlers/auth"
 	database "forum/handlers/dataBase"
 
 	"github.com/gorilla/websocket"
@@ -46,17 +47,22 @@ func getUserID(nickname string) int {
 }
 
 func ChatHandler(w http.ResponseWriter, r *http.Request) {
+	userID, err := auth.ValidateSession(r, database.ForumDB)
+	if err != nil {
+		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		return
+	}
+	username, err := getUserName(userID)
+	if err != nil {
+		http.Error(w, "unable to extract nickname from session", http.StatusInternalServerError)
+		return
+	}
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	fmt.Println("in chatHandler")
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("Upgrade failed:", err)
 		http.Error(w, "WebSocket upgrade failed", http.StatusBadRequest)
-		return
-	}
-	username := r.URL.Query().Get("nickname")
-	if username == "" {
-		conn.Close()
 		return
 	}
 	handleNewConnection(username, conn)
@@ -83,6 +89,16 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 			RedirectMessage(msg)
 		}
 	}()
+}
+
+func getUserName(userID int) (string, error) {
+	var nickname string
+	query := "SELECT nickname FROM users WHERE id = ?"
+	err := database.ForumDB.QueryRow(query, userID).Scan(&nickname)
+	if err != nil {
+		return "", fmt.Errorf("could not get nickname: %v", err)
+	}
+	return nickname, nil
 }
 
 func handleNewConnection(userName string, conn *websocket.Conn) {
