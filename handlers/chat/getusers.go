@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"sort"
 	"time"
 
 	"forum/handlers/auth"
@@ -18,7 +19,7 @@ type UserStatus struct {
 	LastMessageSentAt  *time.Time `json:"last_message_sent_at"`
 }
 
-func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
+func GetDiscussionsListHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := auth.ValidateSession(r, database.ForumDB)
 	if err != nil {
 		http.Error(w, "Invalid session", http.StatusUnauthorized)
@@ -49,7 +50,8 @@ func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
 		) AS last_message_sent_at
 	FROM users u
 	WHERE u.id <> ?;
-`
+	`
+
 	rows, err := database.ForumDB.Query(query, userID, userID, userID, userID, userID)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
@@ -67,25 +69,30 @@ func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
 		var nickname string
 		var lastMessageContent sql.NullString
 		var lastMessageSentAt sql.NullTime
-	
+
 		err := rows.Scan(&id, &nickname, &lastMessageContent, &lastMessageSentAt)
 		if err != nil {
 			continue
 		}
-	
+
+		// Skip users with no discussion
+		if !lastMessageContent.Valid && !lastMessageSentAt.Valid {
+			continue
+		}
+
 		connections, ok := clients[nickname]
 		isOnline := ok && len(connections) > 0
-	
+
 		var messageContentPtr *string
 		if lastMessageContent.Valid {
 			messageContentPtr = &lastMessageContent.String
 		}
-	
+
 		var messageSentAtPtr *time.Time
 		if lastMessageSentAt.Valid {
 			messageSentAtPtr = &lastMessageSentAt.Time
 		}
-	
+
 		userList = append(userList, UserStatus{
 			ID:                 id,
 			Nickname:           nickname,
@@ -93,7 +100,19 @@ func GetUsersListHandler(w http.ResponseWriter, r *http.Request) {
 			LastMessageContent: messageContentPtr,
 			LastMessageSentAt:  messageSentAtPtr,
 		})
-	}	
+	}
+
+	// Sort discussions by last message date (descending)
+	sort.Slice(userList, func(i, j int) bool {
+		// If one of them has nil date, push it to the end
+		if userList[i].LastMessageSentAt == nil {
+			return false
+		}
+		if userList[j].LastMessageSentAt == nil {
+			return true
+		}
+		return userList[i].LastMessageSentAt.After(*userList[j].LastMessageSentAt)
+	})
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(userList)

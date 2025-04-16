@@ -25,12 +25,15 @@ var (
 )
 
 type Message struct {
-	From    string `json:"from"`
-	To      string `json:"to"`
+	From    string `json:"sender_nickname"`
+	To      string `json:"receiver_nickname"`
 	Content string `json:"content"`
 }
 
-func saveMessageToDB(senderID, receiverID int, content string) error {
+func saveMessageToDB(senderNickname, receiverNickname, content string) error {
+	senderID := getUserID(senderNickname)
+	receiverID := getUserID(receiverNickname)
+
 	query := `INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)`
 	_, err := database.ForumDB.Exec(query, senderID, receiverID, content)
 	return err
@@ -77,15 +80,17 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 			var msg Message
 			err := conn.ReadJSON(&msg)
 			if err != nil {
+				fmt.Println("here")
 				fmt.Println("Read error:", err)
 				break
 			}
-			err = saveMessageToDB(getUserID(msg.From), getUserID(msg.To), msg.Content)
+			err = saveMessageToDB(username, msg.To, msg.Content)
 			if err != nil {
 				fmt.Println("Error saving message to DB:", err)
 				break
 			}
-
+			fmt.Println("message saved to db")
+			msg.From = username
 			RedirectMessage(msg)
 		}
 	}()
@@ -123,6 +128,7 @@ func RedirectMessage(msg Message) {
 					delete(clients, msg.To)
 				}
 			}
+			fmt.Println("Message redirected successfully")
 		}
 	}
 }

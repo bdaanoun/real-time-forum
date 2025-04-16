@@ -9,28 +9,22 @@ export default async function ChatPopup() {
     openClose.className = "upDown rotated"
     openClose.onclick = () => { toggleChatDisplay() }
 
-    // === Toggle Buttons ===
-    const chatsBtn = div("chatTab selected", "Chats")
-    const onlineBtn = div("chatTab", "Online")
+    const chatsBtn = div("chatTab chaty selected", "Chats")
+    const onlineBtn = div("chatTab staty", "Online")
     chatsBtn.onclick = () => showTab("chats")
-    onlineBtn.onclick = () => showTab("online")
+    onlineBtn.onclick = () => showTab("status")
 
     const toggleTabs = div("toggleTabs").add(chatsBtn, onlineBtn)
 
-    // === Content Containers ===
-    const discussionsContainer = div("chatTabContent chatsContent") // default shown
-    const usersContainer = div("chatTabContent onlineContent hidden")
+    const discussionsContainer = div("chats")
+    const usersContainer = div("status hidden")
 
-    // Add sample content
-    // discussionsContainer.textContent = "Discussions go here..."
-
-    // usersContainer.textContent = "Users go here..."
     let chatBody = div("chatBodyContainer").add(div("chatBody").add(
         toggleTabs,
         discussionsContainer,
         usersContainer
     ))
-    let popup = div("chat").add(
+    let popup = div("misagat").add(div("chat").add(
         div("MessagesHeader").add(
             div("chatwithicon").add(
                 createImageElement("messages.svg"),
@@ -39,45 +33,89 @@ export default async function ChatPopup() {
             openClose
         ),
         chatBody
-    )
+    ), div("chatWithUser"))
 
     document.body.append(popup)
-    let userList = await getUsersList()
+    await fetchandUpdateDiscussions()
+    await fetchAndupdateStatus()
 
-    document.addEventListener("click", (e) => {
-        const chatBody = document.querySelector(".chatBody")
-        if (!popup.contains(e.target) && openClose.classList.contains("rotated")) {
-            chatBody?.classList.add("hidden")
-            openClose.classList.remove("rotated")
+    // document.addEventListener("click", (e) => {
+    //     const chatBody = document.querySelector(".chatBody")
+      
+    //     if (!popup.contains(e.target) && openClose.classList.contains("rotated")) {
+    //         chatBody?.classList.add("hidden")
+    //         openClose.classList.remove("rotated")
+    //     }
+    // })
+}
+export async function fetchandUpdateDiscussions() {
+    let discussionsList = await getDscussionsList()
+    let chatsDiv = document.querySelector(".chats")
+    chatsDiv.innerHTML = ""
+    discussionsList.forEach((user) => {
+        const avatar = createImageElement("avatar.svg")
+        avatar.className = "userAvatar"
+        const statusDot = document.createElement(`span`)
+        statusDot.className = user.is_online ? `statusDot  ${user.nickname} online` : `statusDot  ${user.nickname}`
+
+        const header = div("userCardHeader").add(avatar, statusDot)
+        const name = div("textsContainer").add(div("nickname", user.nickname), div("msgContent", user.last_message_content))
+        const discussionCard = div(`userCard ${user.nickname}`).add(header, name)
+
+        discussionCard.onclick = () => {
+            oneToOneChat(user.nickname)
+            console.log(`Starting chat with ${user.nickname}`)
         }
+        chatsDiv.append(discussionCard)
     })
 
-    userList.forEach(user => {
-
-        usersContainer.append(createUserCard(user))
-        discussionsContainer.append(createUserCard2(user))
-    });
-
 }
-function createUserCard2(user) {
-    const avatar = createImageElement("avatar.svg")
-    avatar.className = "userAvatar"
+async function fetchAndupdateStatus() {
+    let userList = await getOnlineUsers()
+    let statusDiv = document.querySelector(".status")
+    userList?.forEach((user) => {
+        const avatar = createImageElement("avatar.svg")
+        avatar.className = "userAvatar"
+        const statusDot = document.createElement(`span`)
+        statusDot.className = user.is_online ? `statusDot  ${user.nickname} online` : `statusDot  ${user.nickname}`
 
-    const statusDot = document.createElement(`span`)
-    statusDot.className = user.is_online ? `statusDot  ${user.nickname} online` : `statusDot  ${user.nickname}`
-
-    const header = div("userCardHeader").add(avatar, statusDot)
-    const name = div("textsContainer").add(div("nickname", user.nickname), user.last_message_content ? user.last_message_content : "no messages")
-    const userCard = div(`userCard`).add(header, name)
-
-    userCard.onclick = () => {
-        document.querySelector(".chatBody").classList.add("hidden")
-        oneToOneChat(user)
-        console.log(`Starting chat with ${user.nickname}`)
-        // Chat logic here
+        const header = div("userCardHeader").add(avatar, statusDot)
+        const name = div("nickname", user.nickname)
+        const userCard = div(`userCard`).add(header, name)
+        userCard.onclick = () => {
+            document.querySelector(".chatBody").classList.add("hidden")
+            oneToOneChat(user.nickname)
+            console.log(`Starting chat with ${user.nickname}`)
+        }
+        statusDiv.append(userCard)
+    })
+}
+export function scrollToBottom() {
+    const messagesContainer = document.querySelector('.chatMessages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+}
+async function getDscussionsList() {
+    let resp = await fetch(`api/GetDiscussions`, {
+        method: "GET",
+    })
+    if (!resp.ok) {
+        console.log("unable to fetch discussions list");
+        return
     }
-
-    return userCard
+    let userList = await resp.json()
+    return userList
+}
+async function getOnlineUsers() {
+    let resp = await fetch(`api/GetOnlineUsers`, {
+        method: "GET",
+    })
+    if (!resp.ok) {
+        console.log("unable to fetch online users");
+        return
+    }
+    let userList = await resp.json()
+    return userList
 }
 function toggleChatDisplay() {
     document.querySelector(".chatBodyContainer").classList.toggle("hidden")
@@ -85,10 +123,10 @@ function toggleChatDisplay() {
 }
 
 function showTab(tab) {
-    const chatsBtn = document.querySelector(".chatTab:nth-child(1)")
-    const onlineBtn = document.querySelector(".chatTab:nth-child(2)")
-    const chatsContent = document.querySelector(".chatsContent")
-    const onlineContent = document.querySelector(".onlineContent")
+    const chatsBtn = document.querySelector(".chatTab.chaty")
+    const onlineBtn = document.querySelector(".chatTab.staty")
+    const chatsContent = document.querySelector(".chats")
+    const onlineContent = document.querySelector(".status")
 
     if (tab === "chats") {
         chatsBtn.classList.add("selected")
@@ -102,47 +140,14 @@ function showTab(tab) {
         onlineContent.classList.remove("hidden")
     }
 }
-async function getUsersList() {
-    let resp = await fetch(`api/GetUsers?nickname=${profileData.Nickname}`, {
-        method: "GET",
-    })
-    if (!resp.ok) {
-        console.log("unable to fetch users");
-        return
-    }
-    let userList = await resp.json()
-    return userList
-}
-
-
-function createUserCard(user) {
-    const avatar = createImageElement("avatar.svg")
-    avatar.className = "userAvatar"
-
-    const statusDot = document.createElement(`span`)
-    statusDot.className = user.is_online ? `statusDot  ${user.nickname} online` : `statusDot  ${user.nickname}`
-
-    const header = div("userCardHeader").add(avatar, statusDot)
-    const name = div("nickname", user.nickname)
-    const userCard = div(`userCard ${user.nickname} ${user.is_online ? "" : "hidden"}`).add(header, name)
-
-    userCard.onclick = () => {
-        document.querySelector(".chatBody").classList.add("hidden")
-        oneToOneChat(user)
-        console.log(`Starting chat with ${user.nickname}`)
-    }
-
-    return userCard
-}
-
-async function oneToOneChat(user) {
-    let messages = await fetchPrivateMessage(user)
+export async function oneToOneChat(nickname) {
+    let messages = await fetchPrivateMessage(nickname)
     let back = createImageElement("back.png")
     back.classList.add("closeChat")
     let chatMessages = div("chatMessages")
     if (messages) {
         messages.forEach((msg) => {
-            if (msg.sender_nickname === user.nickname) {
+            if (msg.sender_nickname === nickname) {
                 chatMessages.append(div("message",).add(div("MsgContent", msg.content), div(msg.sent_at)))
             } else {
                 chatMessages.append(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
@@ -151,38 +156,30 @@ async function oneToOneChat(user) {
     } else {
         chatMessages.add("no messages ")
     }
-    // .add(
-    //     div("message",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april")),
-    //     div("message me",).add(div("MsgContent", "Hello! How are you?"), div("date", "15 april"))
-    // )
     let myInput = input("text", "Type a message...")
-    let chatOne = div("chatWithUser").add(
-        div("discussionContainer").add(div('chatHead').add(
-            back,
-            createImageElement('avatar.svg'),
-            div("nickname", user.nickname),
+    let chatOne = div(`discussionContainer ${nickname}`).add(div('chatHead').add(
+        back,
+        createImageElement('avatar.svg'),
+        div("nickname", nickname),
+    ),
+        div('conversationBody').add(
+            chatMessages
         ),
-            div('conversationBody').add(
-                chatMessages
-            ),),
         div("chatInputArea").add(
             myInput,
-            button("send", () => sendMessage(profileData.nickname, user.nickname, myInput.value))
-        )
-    );
+            button("send", () => sendMessage(profileData.nickname, nickname, myInput.value))
+        ))
     back.onclick = () => {
         console.log("removed");
-        document.querySelector(".chatBody").classList.remove("hidden")
-        chatOne.classList.add("hidden")
+        document.querySelector(".chatWithUser").innerHTML = ""
     }
-    document.querySelector('.chatBodyContainer').append(chatOne);
-
-    // let closeChat= document.querySelector('.closeChat')
-    // closeChat.onclick = () => {chatOne.classList.add("hidden")}
+    document.querySelector('.chatWithUser').innerHTML = ""
+    document.querySelector('.chatWithUser').append(chatOne);
+    scrollToBottom()
 }
-async function fetchPrivateMessage(user) {
+async function fetchPrivateMessage(nickname) {
     try {
-        let resp = await fetch(`api/GetMessages?nickname=${profileData.Nickname}&otherser=${user.nickname}`, {
+        let resp = await fetch(`api/GetMessages?nickname=${profileData.Nickname}&otherser=${nickname}`, {
             method: "GET",
         });
 
@@ -199,17 +196,17 @@ async function fetchPrivateMessage(user) {
 }
 
 function sendMessage(me, to, content) {
-    if (!socket || socket.readyState !== WebSocket.OPEN) {
-        console.error("WebSocket is not open.");
-        return;
-    }
+    // if (!socket || socket.readyState !== WebSocket.OPEN) {
+    //     console.error("WebSocket is not open.");
+    //     return;
+    // }
 
     const message = {
         content: content,
-        sent_at: null,
-        sender_nickname: me,
         receiver_nickname: to
     };
-
-    socket.send(JSON.stringify(message));
+    socket.send(JSON.stringify(message))
+    document.querySelector(".chatMessages").append(div("message me").add(div("MsgContent", content), div(Date.now())))
+    fetchandUpdateDiscussions()
+    scrollToBottom()
 }

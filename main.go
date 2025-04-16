@@ -28,9 +28,12 @@ func setupHandlers() {
 	http.HandleFunc("/api/Login", auth.LogUser)
 	http.HandleFunc("/api/Logout", auth.LogoutHandler)
 
+	//chat
 	http.HandleFunc("/api/Chat", chat.ChatHandler)
 	http.HandleFunc("/api/GetMessages", chat.GetMessagesHandler)
-	http.HandleFunc("/api/GetUsers", chat.GetUsersListHandler)
+	http.HandleFunc("/api/GetDiscussions", chat.GetDiscussionsListHandler)
+	http.HandleFunc("/api/GetOnlineUsers", chat.GetOnlineUsersHandler)
+	
 
 	// posts
 	http.HandleFunc("/api/CreatePost", Post.SetPostHandler)
