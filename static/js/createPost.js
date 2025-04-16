@@ -43,7 +43,7 @@ export async function CreatePost() {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "category-checkbox";
-    checkbox.value = index
+    checkbox.value = index+1
 
     const labelText = document.createTextNode(cat);
     checkboxLabel.appendChild(checkbox);

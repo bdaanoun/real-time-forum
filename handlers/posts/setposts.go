@@ -16,7 +16,7 @@ type PostRequest struct {
 }
 
 type PostResponse struct {
-        Category      string    `json:"category"`
+        Category      []string    `json:"category"`
         Content       string    `json:"content"`
         CreatedAt     time.Time `json:"created_at"`
         Creator       string    `json:"creator"`
@@ -59,22 +59,22 @@ func SetPostHandler(w http.ResponseWriter, r *http.Request) {
                 return
         }
 
-        var categoryName string
-        if len(req.Categories) > 0 {
-                err = db.QueryRow(`SELECT name FROM categories WHERE id = ?`, req.Categories[0]+1).Scan(&categoryName)
+        var categoryNames []string
+	if len(req.Categories) > 0 {
+		for _, categoryID := range req.Categories {
+			_, err := db.Exec(`INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)`, postID, categoryID)
+			if err != nil {
+				http.Error(w, "Failed to insert categories", http.StatusInternalServerError)
+				return
+			}
 
-                if err != nil {
-                        categoryName = ""
-                }
-
-                for _, categoryID := range req.Categories {
-                        _, err := db.Exec(`INSERT INTO post_categories (post_id, category_id) VALUES (?, ?)`, postID, categoryID+1)
-                        if err != nil {
-                                http.Error(w, "failed to inset categories", http.StatusInternalServerError)
-                                return
-                        }
-                }
-        }
+			var catName string
+			err = db.QueryRow(`SELECT name FROM categories WHERE id = ?`, categoryID).Scan(&catName)
+			if err == nil && catName != "" {
+				categoryNames = append(categoryNames, catName)
+			}
+		}
+	}
 
         var creatorName string
         err = db.QueryRow(`SELECT first_name || ' ' || last_name FROM users WHERE id = ?`, req.UserID).Scan(&creatorName)
@@ -89,7 +89,7 @@ func SetPostHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         response := PostResponse{
-                Category:      categoryName,
+                Category:      categoryNames,
                 Content:       req.Content,
                 CreatedAt:     createdAt,
                 Creator:       creatorName,

@@ -19,11 +19,11 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 INSERT OR IGNORE INTO categories (name) VALUES 
-('sport'), 
-('tech'),
-('art'),
-('health'),
-('nature');
+('Technology'), 
+('Sport'),
+('Finance'),
+('Science'),
+('Nature');
 
 CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
