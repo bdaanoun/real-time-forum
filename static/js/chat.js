@@ -6,7 +6,7 @@ import input from "./utils/input.js"
 import { socket } from "./websockets.js"
 export default async function ChatPopup() {
     let openClose = createImageElement("upDown.svg")
-    openClose.className = "upDown"
+    openClose.className = "upDown rotated"
     openClose.onclick = () => { toggleChatDisplay() }
 
     // === Toggle Buttons ===
@@ -25,11 +25,11 @@ export default async function ChatPopup() {
     // discussionsContainer.textContent = "Discussions go here..."
 
     // usersContainer.textContent = "Users go here..."
-    let chatBody = div("chatBody").add(
+    let chatBody = div("chatBodyContainer").add(div("chatBody").add(
         toggleTabs,
         discussionsContainer,
         usersContainer
-    )
+    ))
     let popup = div("chat").add(
         div("MessagesHeader").add(
             div("chatwithicon").add(
@@ -80,7 +80,7 @@ function createUserCard2(user) {
     return userCard
 }
 function toggleChatDisplay() {
-    document.querySelector(".chatBody")?.classList.toggle("hidden")
+    document.querySelector(".chatBodyContainer").classList.toggle("hidden")
     document.querySelector(".upDown")?.classList.toggle("rotated")
 }
 
@@ -124,13 +124,12 @@ function createUserCard(user) {
 
     const header = div("userCardHeader").add(avatar, statusDot)
     const name = div("nickname", user.nickname)
-    const userCard = div(`userCard ${user.nickname} ${user.is_online? "" : "hidden"}`).add(header, name)
+    const userCard = div(`userCard ${user.nickname} ${user.is_online ? "" : "hidden"}`).add(header, name)
 
     userCard.onclick = () => {
         document.querySelector(".chatBody").classList.add("hidden")
         oneToOneChat(user)
         console.log(`Starting chat with ${user.nickname}`)
-        // Chat logic here
     }
 
     return userCard
@@ -172,11 +171,11 @@ async function oneToOneChat(user) {
         )
     );
     back.onclick = () => {
+        console.log("removed");
         document.querySelector(".chatBody").classList.remove("hidden")
-
         chatOne.classList.add("hidden")
     }
-    document.querySelector('.chat').append(chatOne);
+    document.querySelector('.chatBodyContainer').append(chatOne);
 
     // let closeChat= document.querySelector('.closeChat')
     // closeChat.onclick = () => {chatOne.classList.add("hidden")}

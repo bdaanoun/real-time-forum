@@ -144,7 +144,9 @@
 .hidden {
   display: none;
 }
-
+.chatBodyContainer.hidden {
+  display: none;
+}
 
 .chatWithUser {
   display: flex;
