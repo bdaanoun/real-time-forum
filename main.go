@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"time"
 
 	"forum/handlers"
 	"forum/handlers/auth"
@@ -27,7 +29,7 @@ func setupHandlers() {
 	http.HandleFunc("/api/Logout", auth.LogoutHandler)
 
 	http.HandleFunc("/api/Chat", chat.ChatHandler)
-	http.HandleFunc("/api/GetMessages" , chat.GetMessagesHandler)
+	http.HandleFunc("/api/GetMessages", chat.GetMessagesHandler)
 	http.HandleFunc("/api/GetUsers", chat.GetUsersListHandler)
 
 	// posts
@@ -48,6 +50,19 @@ func setupHandlers() {
 func main() {
 	database.DbInit()
 	setupHandlers()
+	sessionDeleter()
 	fmt.Println("http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
+}
+
+func sessionDeleter() {
+	go func() {
+		for {
+			_, err := database.ForumDB.Exec("DELETE FROM sessions WHERE expires_at <= ?", time.Now())
+			if err != nil {
+				log.Println("Error cleaning expired sessions:", err)
+			}
+			time.Sleep(10 * time.Second)
+		}
+	}()
 }
