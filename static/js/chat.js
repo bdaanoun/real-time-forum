@@ -51,7 +51,9 @@ export default async function ChatPopup() {
 export async function fetchandUpdateDiscussions() {
     let discussionsList = await getDscussionsList()
     let chatsDiv = document.querySelector(".chats")
-    chatsDiv.innerHTML = ""
+    if(chatsDiv){
+        chatsDiv.innerHTML = ""
+    }
     discussionsList?.forEach((user) => {
         const avatar = createImageElement("avatar.svg")
         avatar.className = "userAvatar"
@@ -66,7 +68,9 @@ export async function fetchandUpdateDiscussions() {
             oneToOneChat(user.nickname)
             console.log(`Starting chat with ${user.nickname}`)
         }
-        chatsDiv.append(discussionCard)
+        if (chatsDiv){
+            chatsDiv.append(discussionCard)
+        }
     })
 
 }

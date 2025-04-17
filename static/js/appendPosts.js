@@ -7,28 +7,31 @@ import createReactionElement from "./reaction.js";
 
 export default async function appendPosts(postsContainer, posts) {
 
+  postsContainer.innerHTML = ''
+
   for (const post of posts) {
     postsContainer.append(await PostCard(post));
   }
 }
 
 export const Post = (postData) => {
-  console.log(postData);
+  console.log('ooooo', postData);
   let profile = img("no-profile.svg")
   const cts = div("categoriesInPost");
-  if (!Array.isArray(postData.category)){
-    postData.category = postData.category.split(',')
+  let catss = [];
+
+
+  if (Array.isArray(postData.categories)) {
+    catss = postData.categories;
+  } else if (typeof postData.categories === "string") {
+    catss = postData.categories.split(",");
   }
+  catss.forEach((cat) => {
+    if (cat.trim() !== "") {
+      cts.append(div("cat", `#${cat.trim()}`));
+    }
+  });
 
-  
-    console.log('hello is', postData.category);
-
-    postData.category.forEach((cat) => {
-      if (cat.trim() !== "") {
-        cts.append(div("cat", "#" + cat));
-      }
-    });
-  
 
   const post = div("post");
 

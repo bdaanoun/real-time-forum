@@ -11,7 +11,7 @@ import (
 	auth "forum/handlers/auth"
 	dataB "forum/handlers/dataBase"
 )
-
+ 
 func GetCreatedPostsHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := auth.ValidateSession(r, dataB.ForumDB)
 	if err != nil {
