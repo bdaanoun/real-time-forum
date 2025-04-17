@@ -1,4 +1,5 @@
 import { profileData } from "./Headers.js"
+import { MsgsOffset, offset } from "./offset.js"
 import button from "./utils/button.js"
 import div from "./utils/div.js"
 import createImageElement from "./utils/img.js"
@@ -145,6 +146,7 @@ function showTab(tab) {
     }
 }
 export async function oneToOneChat(nickname) {
+    MsgsOffset.reset()
     let messages = await fetchPrivateMessage(nickname)
     let back = createImageElement("back.png")
     back.classList.add("closeChat")
@@ -173,6 +175,7 @@ export async function oneToOneChat(nickname) {
             myInput,
             button("send", () => sendMessage(profileData.nickname, nickname, myInput.value))
         ))
+
     back.onclick = () => {
         console.log("removed");
         document.querySelector(".chatWithUser").innerHTML = ""
@@ -180,10 +183,26 @@ export async function oneToOneChat(nickname) {
     document.querySelector('.chatWithUser').innerHTML = ""
     document.querySelector('.chatWithUser').append(chatOne);
     scrollToBottom()
+    chatMessages.addEventListener('scroll', async () => {
+        if (chatMessages.scrollTop === 0) {
+            let oldMsgs = await fetchPrivateMessage(nickname )
+            if (oldMsgs) {
+                
+                oldMsgs.reverse().forEach((msg) => {
+                    if (msg.sender_nickname === nickname) {
+                        chatMessages.prepend(div("message",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+                    } else {
+                        chatMessages.prepend(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+                    }
+                })
+            } 
+        }
+    });
 }
-async function fetchPrivateMessage(nickname) {
+
+async function fetchPrivateMessage(nickName) {
     try {
-        let resp = await fetch(`api/GetMessages?nickname=${profileData.Nickname}&otherser=${nickname}`, {
+        let resp = await fetch(`api/GetMessages?otherser=${nickName}&&offset=${MsgsOffset.get()}`, {
             method: "GET",
         });
 
@@ -193,6 +212,7 @@ async function fetchPrivateMessage(nickname) {
         }
 
         let messages = await resp.json();
+        MsgsOffset.increase(messages.length)
         return messages;
     } catch (error) {
         console.error("Error fetching messages:", error);

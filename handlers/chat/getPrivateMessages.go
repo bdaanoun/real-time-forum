@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"sort"
+	"strconv"
 	"time"
 
 	"forum/handlers/auth"
@@ -24,16 +25,26 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nickname , err := getUserName(userID)
+	nickname, err := getUserName(userID)
 	if err != nil {
-		http.Error(w, "unable to extract nickname from session", http.StatusInternalServerError)
+		http.Error(w, "Unable to extract nickname from session", http.StatusInternalServerError)
 		return
 	}
-	otherNickname := r.URL.Query().Get("otherser")
 
+	otherNickname := r.URL.Query().Get("otherser")
 	if nickname == "" || otherNickname == "" {
 		http.Error(w, "Missing nickname or otherser parameter", http.StatusBadRequest)
 		return
+	}
+
+	// Extract offset from query, default to 0
+	offsetParam := r.URL.Query().Get("offset")
+	offset := 0
+	if offsetParam != "" {
+		parsedOffset, err := strconv.Atoi(offsetParam)
+		if err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
 	}
 
 	query := `
@@ -49,10 +60,10 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 			(sender.nickname = ? AND receiver.nickname = ?)
 			OR (sender.nickname = ? AND receiver.nickname = ?)
 		ORDER BY m.sent_at DESC
-		LIMIT 10;
+		LIMIT 10 OFFSET ?;
 	`
 
-	rows, err := database.ForumDB.Query(query, nickname, otherNickname, otherNickname, nickname)
+	rows, err := database.ForumDB.Query(query, nickname, otherNickname, otherNickname, nickname, offset)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
@@ -60,16 +71,15 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var messages []Message2
-
 	for rows.Next() {
 		var msg Message2
-		err := rows.Scan(&msg.Content, &msg.SentAt, &msg.SenderNickname, &msg.ReceiverNickname)
-		if err != nil {
+		if err := rows.Scan(&msg.Content, &msg.SentAt, &msg.SenderNickname, &msg.ReceiverNickname); err != nil {
 			continue
 		}
 		messages = append(messages, msg)
 	}
 
+	// Sort to chronological (oldest to newest)
 	sort.Slice(messages, func(i, j int) bool {
 		return messages[i].SentAt.Before(messages[j].SentAt)
 	})

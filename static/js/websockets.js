@@ -55,23 +55,23 @@ function NotifyUser(data) {
   document.body.append(notification)
 }
 function updateUserStatus(nickName, isOnline) {
-  console.log(nickName, profileData.Nickname, isOnline);
-  if (nickName === profileData.Nickname) {
-    return
-  }
-  let status = document.querySelector(`.${nickName}`)
-  console.log(status);
-  let userCard = document.querySelector(`.userCard.${nickName}`)
-  let userCardStatus = userCard.querySelector('span');
-  console.log(userCardStatus);
+  // console.log(nickName, profileData.Nickname, isOnline);
+  // if (nickName === profileData.Nickname) {
+  //   return
+  // }
+  // let status = document.querySelector(`.${nickName}`)
+  // console.log(status);
+  // let userCard = document.querySelector(`.userCard.${nickName}`)
+  // let userCardStatus = userCard.querySelector('span');
+  // console.log(userCardStatus);
 
-  if (isOnline) {
-    status.classList.add("online")
-    userCard.classList.remove("hidden")
-    userCardStatus.classList.add("online")
-  } else {
-    status.classList.remove("online")
-    userCard.classList.add("hidden")
-    userCardStatus.classList.remove("online")
-  }
+  // if (isOnline) {
+  //   status.classList.add("online")
+  //   userCard.classList.remove("hidden")
+  //   userCardStatus.classList.add("online")
+  // } else {
+  //   status.classList.remove("online")
+  //   userCard.classList.add("hidden")
+  //   userCardStatus.classList.remove("online")
+  // }
 }

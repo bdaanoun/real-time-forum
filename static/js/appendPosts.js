@@ -20,12 +20,15 @@ export const Post = (postData) => {
   const cts = div("categoriesInPost");
   let catss = [];
 
-
-  if (Array.isArray(postData.categories)) {
-    catss = postData.categories;
-  } else if (typeof postData.categories === "string") {
-    catss = postData.categories.split(",");
+  console.log("thiz:" , postData.category);
+  
+  if (Array.isArray(postData.category)) {
+    catss = postData.category;
+  } else if (typeof postData.category === "string") {
+    catss = postData.category.split(",");
   }
+  console.log("thiz is " , catss);
+  
   catss.forEach((cat) => {
     if (cat.trim() !== "") {
       cts.append(div("cat", `#${cat.trim()}`));

@@ -1,6 +1,6 @@
 import appendPosts from "./appendPosts.js";
 import { PostCreationBar } from "./createPost.js";
-import { appendUserHeader } from "./Headers.js";
+import { appendUserHeader, fetchProfile } from "./Headers.js";
 import div from "./utils/div.js";
 import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
@@ -8,6 +8,7 @@ import { offset } from "./offset.js";
 import ChatPopup from "./chat.js";
 import openWSCon from "./websockets.js";
 export default async function Home() {
+  
   offset.reset()
   document.body.innerHTML = "";
   await appendUserHeader("home")
@@ -16,12 +17,10 @@ export default async function Home() {
   let postsContainer = div("postsContainer")
   document.body.append(postsContainer);
 
-
   let posts = await fetchPosts();
   console.log("m in home");
   appendPosts(postsContainer , posts)
-  ChatPopup()
-  openWSCon()
+  
   window.addEventListener("scroll", async () => {
     const scrollPosition = window.innerHeight + window.scrollY;
     const nearBottom = document.body.offsetHeight - 200;

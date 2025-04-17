@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	auth "forum/handlers/auth"
 	dataB "forum/handlers/dataBase"
 )
- 
+
 func GetCreatedPostsHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := auth.ValidateSession(r, dataB.ForumDB)
 	if err != nil {
@@ -19,21 +20,31 @@ func GetCreatedPostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := dataB.ForumDB.Query(`
-                SELECT
-                        p.id,
-                        p.title,
-                        p.content,
-                        u.first_name,
-                        u.last_name,
-                        (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 1) AS like_count,
-                        (SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = -1) AS dislike_count,
-                        (SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) AS user_reaction,
-                        p.created_at
-                FROM posts p
-                JOIN users u ON p.user_id = u.id
-                WHERE p.user_id = ?
-                ORDER BY p.created_at DESC`, userID, userID)
+	query := `
+		SELECT
+			p.id,
+			p.title,
+			p.content,
+			u.first_name,
+			u.last_name,
+			IFNULL(
+				(SELECT GROUP_CONCAT(c.name)
+				 FROM post_categories pc
+				 JOIN categories c ON pc.category_id = c.id
+				 WHERE pc.post_id = p.id
+				), ''
+			) AS categories,
+			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = 1) AS like_count,
+			(SELECT COUNT(*) FROM post_reactions WHERE post_id = p.id AND reaction_type = -1) AS dislike_count,
+			(SELECT reaction_type FROM post_reactions WHERE post_id = p.id AND user_id = ?) AS user_reaction,
+			p.created_at
+		FROM posts p
+		JOIN users u ON p.user_id = u.id
+		WHERE p.user_id = ?
+		ORDER BY p.created_at DESC
+	`
+
+	rows, err := dataB.ForumDB.Query(query, userID, userID)
 	if err != nil {
 		log.Println("Error fetching created posts:", err)
 		http.Error(w, "Error fetching created posts", http.StatusInternalServerError)
@@ -46,13 +57,19 @@ func GetCreatedPostsHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var postID int
 		var title, content, firstName, lastName string
+		var categoryString string
 		var likeCount, dislikeCount, userReaction sql.NullInt32
 		var createdAt time.Time
 
-		err := rows.Scan(&postID, &title, &content, &firstName, &lastName, &likeCount, &dislikeCount, &userReaction, &createdAt)
+		err := rows.Scan(&postID, &title, &content, &firstName, &lastName, &categoryString, &likeCount, &dislikeCount, &userReaction, &createdAt)
 		if err != nil {
 			log.Println("Error scanning row:", err)
 			continue
+		}
+
+		categories := []string{}
+		if categoryString != "" {
+			categories = strings.Split(categoryString, ",")
 		}
 
 		post := map[string]interface{}{
@@ -60,6 +77,7 @@ func GetCreatedPostsHandler(w http.ResponseWriter, r *http.Request) {
 			"title":         title,
 			"content":       content,
 			"creator":       fmt.Sprintf("%s %s", firstName, lastName),
+			"category":    categories,
 			"like_count":    likeCount.Int32,
 			"dislike_count": dislikeCount.Int32,
 			"user_reaction": userReaction.Int32,

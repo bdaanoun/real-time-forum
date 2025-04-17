@@ -83,6 +83,11 @@ async function CreatePostFetch(titleInput, textInput) {
   }
  
   let res = await fetch("/api/CheckAuth");
+  if (!res.ok) {
+    console.log("Unauthorized to create a post");
+    
+    return
+  }
   let id = await res.text();
 
   let resp = await fetch("/api/CreatePost", {

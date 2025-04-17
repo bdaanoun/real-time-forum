@@ -166,7 +166,7 @@
   overflow: hidden;
   justify-content: space-between;
   background: #272931;
-  height: 400px;
+  max-height: 400px;
 
 }
 
