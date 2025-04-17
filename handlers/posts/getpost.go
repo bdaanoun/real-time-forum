@@ -32,10 +32,8 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 		userID = 0 // treat as guest user
 	}
 
-	// Get all category filters from the query: ?categories=Art&categories=Sportif
 	categories := r.URL.Query()["categories"]
 
-	// Build the SQL query dynamically
 	baseQuery := `
 		SELECT
 			p.id,
@@ -55,7 +53,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	`
 	args := []interface{}{userID}
 
-	// Add WHERE clause if categories are provided
 	if len(categories) > 0 {
 		baseQuery += " WHERE c.name IN (" + placeholders(len(categories)) + ")"
 		for _, cat := range categories {
@@ -63,7 +60,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Final part of the query
 	baseQuery += `
 		GROUP BY p.id
 		ORDER BY p.created_at DESC
@@ -71,7 +67,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	`
 	args = append(args, offsetInt)
 
-	// Execute the query
 	rows, err := dataB.ForumDB.Query(baseQuery, args...)
 	if err != nil {
 		log.Println("Error fetching posts:", err)
@@ -109,7 +104,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 		posts = append(posts, post)
 	}
 
-	// Send JSON response
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		log.Println("Error encoding response:", err)
@@ -117,7 +111,6 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Helper to create placeholders like "?,?,?,?"
 func placeholders(n int) string {
 	return strings.TrimRight(strings.Repeat("?,", n), ",")
 }

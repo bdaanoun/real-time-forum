@@ -1,29 +1,30 @@
 import { offset } from "./offset.js";
 import div from "./utils/div.js";
 import fetchPosts from "./fetchposts.js"
+import appendPosts from "./appendPosts.js";
 export const selectedCategories = new Set();
 
 export default function setupCategoryFilters() {
-    const categoriesList = ["Sportif", "Art", "Biology", "Musical"];
+    const categoriesList = ["Technology", "Sport", "finance", "Science", "Nature"];
 
     const filterContainer = div("filter");
     const categories = div("categories");
     filterContainer.appendChild(categories);
 
     const allDiv = div("category active all", "All");
-    allDiv.onclick = (event) => filterByCat(event);
+    allDiv.onclick = async (event) => await filterByCat(event);
     categories.appendChild(allDiv);
 
     categoriesList.forEach((category) => {
         const categoryDiv = div("category", category);
-        categoryDiv.onclick = (event) => filterByCat(event);
+        categoryDiv.onclick = async (event) => await filterByCat(event);
         categories.appendChild(categoryDiv);
     });
 
     document.body.appendChild(filterContainer);
 }
 
-function filterByCat(event) {
+async function filterByCat(event) {
     const clicked = event.target;
     const category = clicked.innerText;
 
@@ -50,5 +51,11 @@ function filterByCat(event) {
         }
     }
     offset.reset()
-    fetchPosts();
+
+    let res = await fetchPosts();
+    console.log('kjhlkj');
+    
+    console.log('ggg',res);
+    
+    appendPosts(document.querySelector('.postsContainer'), res)
 }

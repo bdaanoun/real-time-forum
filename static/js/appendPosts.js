@@ -6,7 +6,11 @@ import navigateTo from "./main.js";
 import createReactionElement from "./reaction.js";
 
 export default async function appendPosts(postsContainer, posts) {
+  console.log('bef', postsContainer);
 
+  postsContainer.innerHTML = ''
+  console.log('af', postsContainer);
+  
   for (const post of posts) {
     postsContainer.append(await PostCard(post));
   }
@@ -16,19 +20,17 @@ export const Post = (postData) => {
   console.log(postData);
   let profile = img("no-profile.svg")
   const cts = div("categoriesInPost");
-  if (!Array.isArray(postData.category)){
+  if (!Array.isArray(postData.category)) {
     postData.category = postData.category.split(',')
   }
 
-  
-    console.log('hello is', postData.category);
 
-    postData.category.forEach((cat) => {
-      if (cat.trim() !== "") {
-        cts.append(div("cat", "#" + cat));
-      }
-    });
-  
+  postData.category.forEach((cat) => {
+    if (cat.trim() !== "") {
+      cts.append(div("cat", "#" + cat));
+    }
+  });
+
 
   const post = div("post");
 
