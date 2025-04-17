@@ -69,9 +69,9 @@ func GetLikedPostsHandler(w http.ResponseWriter, r *http.Request) {
 			"creator":       fmt.Sprintf("%s %s", firstName, lastName),
 			"like_count":    likeCount.Int32,
 			"dislike_count": dislikeCount.Int32,
-			"user_reaction": userReaction, // Corrected this line
+			"user_reaction": userReaction, 
 			"created_at":    createdAt,
-                        "category" : category,
+            "category" : category,
 		}
 
 		posts = append(posts, post)
