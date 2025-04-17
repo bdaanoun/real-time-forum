@@ -18,7 +18,7 @@ func GetLikedPostsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid session", http.StatusUnauthorized)
 		return
 	}
-
+ 
 	rows, err := dataB.ForumDB.Query(`
     SELECT
         p.id,
@@ -73,6 +73,7 @@ func GetLikedPostsHandler(w http.ResponseWriter, r *http.Request) {
 			"created_at":    createdAt,
             "category" : category,
 		}
+		fmt.Println("oo", post[category])
 
 		posts = append(posts, post)
 	}

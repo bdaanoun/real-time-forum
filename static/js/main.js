@@ -7,70 +7,88 @@ import PostView from "./PostView.js";
 import register from "./register.js";
 import div from "./utils/div.js";
 import ensureAuth from "./utils/ensureAuth.js";
+import openWSCon from "./websockets.js";
+import { fetchProfile } from "./Headers.js";
+
+
+
 export default function navigateTo(path, data) {
     history.pushState({}, '', path);
     route(data);
 }
 
-
 window.addEventListener("popstate", () => {
     route();
 });
 
-window.addEventListener("DOMContentLoaded", () => {
+let connected = false;
+
+window.addEventListener("DOMContentLoaded", async () => {
+    const url = window.location.pathname;
+    const isAuth = await ensureAuth();
+
+    if (!isAuth) {
+        if (url === "/login") {
+            login();
+        } else if (url === "/register") {
+            register();
+        } else {
+            navigateTo("/login");
+        }
+        return;
+    }
+
+    // If user is authenticated
+    if (!connected) {
+        await fetchProfile(); // get user info
+        openWSCon();          // start WebSocket
+        connected = true;
+    }
+
     route();
 });
 
-async function route(data) {
-    let url = window.location.pathname
 
-    if (!await ensureAuth()) {
-        if (url === "/login") {
-            login()
-        } else {
-            register()
-        }
-        return
+async function route(data) {
+    const url = window.location.pathname;
+    const isAuth = await ensureAuth();
+
+    if (!isAuth && url !== "/login" && url !== "/register") {
+        navigateTo("/login");
+        return;
     }
 
     const postMatch = url.match(/^\/post\/(\d+)$/);
     if (postMatch) {
-        const postId = postMatch[1];
         PostView();
         return;
     }
 
     switch (url) {
         case "/":
-            await Home()
+            await Home();
             break;
-        // case "/create-post":
-        //     document.body.append(CreatePost())
-        //     break
         case "/liked":
-            AppendLikedPosts()
-            break
+            AppendLikedPosts();
+            break;
         case "/created":
-            AppendCreatedPosts()
-            break
+            AppendCreatedPosts();
+            break;
         case "/login":
-            Home()
+            login();
             break;
         case "/register":
-            Home()
+            register();
             break;
         default:
-            pageNotFound()
-            break
-
+            pageNotFound();
+            break;
     }
-
 }
 
-function pageNotFound() {
-    document.body.innerHTML = ""; // Clear out the current page
 
-    // console.log("what you trying to do MF.");
+function pageNotFound() {
+    document.body.innerHTML = "";
 
     const container = div("not-found").add(
         div("title", "404 - Page Not Found"),

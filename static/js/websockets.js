@@ -1,4 +1,4 @@
-import { fetchandUpdateDiscussions, scrollToBottom  , oneToOneChat} from "./chat.js";
+import { fetchandUpdateDiscussions, scrollToBottom, oneToOneChat } from "./chat.js";
 import { profileData } from "./Headers.js";
 import button from "./utils/button.js";
 import div from "./utils/div.js";
@@ -20,28 +20,32 @@ export default function openWSCon() {
       } else {
         console.log(data);
         NotifyUser(data)
-        fetchandUpdateDiscussions()
-        let openDiscussion = document.querySelector(".discussionContainer")
-        if (openDiscussion && openDiscussion.classList.contains(data.sender_nickname)) {
-          console.log("received and checked");
-          document.querySelector('.chatMessages').append(div("message",).add(div("MsgContent", data.content), div(data.sent_at)))
-          scrollToBottom()
-        }
       }
-
+      fetchandUpdateDiscussions()
+      let openDiscussion = document.querySelector(".discussionContainer")
+      if (openDiscussion && openDiscussion.classList.contains(data.sender_nickname)) {
+        console.log("received and checked");
+        document.querySelector('.chatMessages').append(div("message",).add(div("MsgContent", data.content), div(data.sent_at)))
+        scrollToBottom()
+      }
     } catch (err) {
       console.error("Failed to parse WebSocket message:", err);
-    }
-  };
 
+    }
+    
+  }
   socket.onclose = function () {
     console.log("WebSocket connection closed.");
   };
-
+  
   socket.onerror = function (error) {
     console.error("WebSocket error:", error);
   };
-}
+};
+
+
+
+
 function NotifyUser(data) {
   let notification = div("MsgNotification", `new message received from ${data.sender_nickname}`).add(
     button("view", () => {

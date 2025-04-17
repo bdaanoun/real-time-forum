@@ -23,23 +23,30 @@ function ToggleDisplay() {
 }
 
 export let profileData;
-async function fetchProfile() {
+export async function fetchProfile() {
   try {
     const response = await fetch("/api/Profile", { method: "GET" });
+
+    if (response.status === 401) {
+      console.warn("User is not authenticated.");
+      return null; 
+    }
+
     if (!response.ok) {
       throw new Error("Failed to fetch: " + response.statusText);
     }
+
     profileData = await response.json();
     console.log(profileData);
-    
     return profileData;
   } catch (error) {
     console.error("Error fetching user profile:", error);
+    return null;
   }
 }
+
 export async function appendUserHeader(page = "home") {
   let userD = await fetchProfile();
-  console.log(userD);
 
   let icn1 = div("contain");
   let icn2 = div("contain");
