@@ -9,6 +9,7 @@ import navigateTo from "./main.js";
 import createReactionElement from "./reaction.js";
 
 const PostView = async (postData) => {
+  
   const postView = div("postView");
   postView.onclick = (e) => {
     if (e.target === postView) {

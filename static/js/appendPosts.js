@@ -16,19 +16,22 @@ export const Post = (postData) => {
   console.log(postData);
   let profile = img("no-profile.svg")
   const cts = div("categoriesInPost");
-  if (Array.isArray(postData.category)) {
+  if (!Array.isArray(postData.category)){
+
+    postData.category = postData.category.split(',')
+  }
+
+  
     console.log('hello is', postData.category);
-    
+
     postData.category.forEach((cat) => {
       if (cat.trim() !== "") {
         cts.append(div("cat", "#" + cat));
       }
     });
-  }
+  
 
   const post = div("post");
-  console.log(postData);
-  console.log(postData.created_at);
 
   return post.add(
     div("publisher").add(
@@ -65,6 +68,7 @@ export const PostCard = async (postData) => {
   // likeOnClick(dislike, reactionEndpoint);
   // dislikeOnClick(like, reactionEndpoint);
   let post = Post(postData)
+
   post.onclick = showPost;
   return div("postContainer").add(
     post,

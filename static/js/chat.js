@@ -52,7 +52,7 @@ export async function fetchandUpdateDiscussions() {
     let discussionsList = await getDscussionsList()
     let chatsDiv = document.querySelector(".chats")
     chatsDiv.innerHTML = ""
-    discussionsList.forEach((user) => {
+    discussionsList?.forEach((user) => {
         const avatar = createImageElement("avatar.svg")
         avatar.className = "userAvatar"
         const statusDot = document.createElement(`span`)
@@ -83,7 +83,7 @@ async function fetchAndupdateStatus() {
         const name = div("nickname", user.nickname)
         const userCard = div(`userCard`).add(header, name)
         userCard.onclick = () => {
-            document.querySelector(".chatBody").classList.add("hidden")
+            document.querySelector(".chatBody")
             oneToOneChat(user.nickname)
             console.log(`Starting chat with ${user.nickname}`)
         }
