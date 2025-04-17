@@ -17,7 +17,6 @@ export const Post = (postData) => {
   let profile = img("no-profile.svg")
   const cts = div("categoriesInPost");
   if (!Array.isArray(postData.category)){
-
     postData.category = postData.category.split(',')
   }
 
