@@ -151,11 +151,17 @@
   position: absolute;
   bottom: 0px;
   right: 24px;
-  width: 800px;
+  width: max-content;
+  height: fit-content;
   z-index: 15;
   justify-content: flex-end;
   align-items: flex-end;
   gap: 16px;
+}
+@media screen and (max-width : 360px) {
+  .chat {
+    min-width: 200px;
+  }
 }
 .chatWithUser {
   display: flex;
