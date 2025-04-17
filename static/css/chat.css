@@ -143,9 +143,6 @@
 .chatBodyContainer.hidden {
   display: none;
 }
-/* body {
-  position: relative;
-} */
 .misagat {
   display: flex;
   position: absolute;
