@@ -42,7 +42,7 @@ func setupHandlers() {
 	http.HandleFunc("/api/GetLikedPosts", Post.GetLikedPostsHandler)
 	http.HandleFunc("/api/GetCreatedPosts", Post.GetCreatedPostsHandler)
 
-	//
+	//comments
 	http.HandleFunc("/api/GetComments", Comment.GetCommentsHandler)
 	http.HandleFunc("/api/SetComment", Comment.SetCommentHandler)
 	http.HandleFunc("/api/Like", handlers.ReactionHandler)

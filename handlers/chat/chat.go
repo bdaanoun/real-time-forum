@@ -28,6 +28,7 @@ type Message struct {
 	From    string `json:"sender_nickname"`
 	To      string `json:"receiver_nickname"`
 	Content string `json:"content"`
+	Me      bool   `json:"me"`
 }
 
 func saveMessageToDB(senderNickname, receiverNickname, content string) error {
@@ -71,29 +72,31 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 	handleNewConnection(username, conn)
 	fmt.Println(username, "connected")
 
-	go func() {
-		defer func() {
-			removeConnection(username, conn)
-			fmt.Println(username, "disconnected")
-		}()
-		for {
-			var msg Message
-			err := conn.ReadJSON(&msg)
-			if err != nil {
-				fmt.Println("here")
-				fmt.Println("Read error:", err)
-				break
-			}
-			err = saveMessageToDB(username, msg.To, msg.Content)
-			if err != nil {
-				fmt.Println("Error saving message to DB:", err)
-				break
-			}
-			fmt.Println("message saved to db")
-			msg.From = username
-			RedirectMessage(msg)
-		}
+	defer func() {
+		removeConnection(username, conn)
+		fmt.Println(username, "disconnected")
 	}()
+	for {
+		var msg Message
+		err := conn.ReadJSON(&msg)
+		if err != nil {
+			fmt.Println("here")
+			fmt.Println("Read error:", err)
+			break
+		}
+		if msg.Content == "" {
+			return
+		}
+		err = saveMessageToDB(username, msg.To, msg.Content)
+		if err != nil {
+			fmt.Println("Error saving message to DB:", err)
+			break
+		}
+		fmt.Println("message saved to db")
+		msg.From = username
+		fmt.Println(msg)
+		RedirectMessage(msg)
+	}
 }
 
 func getUserName(userID int) (string, error) {
@@ -117,20 +120,43 @@ func handleNewConnection(userName string, conn *websocket.Conn) {
 }
 
 func RedirectMessage(msg Message) {
-	targetConns, ok := clients[msg.To]
-	if ok {
-		for i, conn := range targetConns {
-			err := conn.WriteJSON(msg)
+	if targetConns, ok := clients[msg.To]; ok {
+		for i := 0; i < len(targetConns); {
+			msg.Me = false
+
+			err := targetConns[i].WriteJSON(msg)
 			if err != nil {
+				// Remove bad connection
 				targetConns = append(targetConns[:i], targetConns[i+1:]...)
 				clients[msg.To] = targetConns
 				if len(targetConns) == 0 {
 					delete(clients, msg.To)
 				}
+			} else {
+				i++
 			}
-			fmt.Println("Message redirected successfully")
 		}
 	}
+
+	if sourceConns, ok := clients[msg.From]; ok {
+		for i := 0; i < len(sourceConns); {
+			outMsg := msg
+			outMsg.Me = true
+
+			err := sourceConns[i].WriteJSON(outMsg)
+			if err != nil {
+				sourceConns = append(sourceConns[:i], sourceConns[i+1:]...)
+				clients[msg.From] = sourceConns
+				if len(sourceConns) == 0 {
+					delete(clients, msg.From)
+				}
+			} else {
+				i++
+			}
+		}
+	}
+
+	fmt.Println("Message sent to both sender and recipient")
 }
 
 func broadcastToAll(msg StatusChangeMessage) {

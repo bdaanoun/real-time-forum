@@ -54,7 +54,7 @@ input::placeholder {
 button {
     height: 40px;
     border: none;
-    border-radius: 999px;
+    border-radius: 8px;
     font-weight: bold;
     font-size: 14px;
     cursor: pointer;

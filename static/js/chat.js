@@ -243,17 +243,16 @@ async function fetchPrivateMessage(nickName) {
 }
 
 function sendMessage(me, to, content) {
-    // if (!socket || socket.readyState !== WebSocket.OPEN) {
-    //     console.error("WebSocket is not open.");
-    //     return;
-    // }
-
+    content  = content.trim()
+    if (!content) {
+        return
+    }
     const message = {
         content: content,
         receiver_nickname: to
     };
     socket.send(JSON.stringify(message))
-    document.querySelector(".chatMessages").append(div("message me").add(div("MsgContent", content), div(Date.now())))
+    //document.querySelector(".chatMessages").append(div("message me").add(div("MsgContent", content), div(Date.now())))
     fetchandUpdateDiscussions()
     scrollToBottom()
 }

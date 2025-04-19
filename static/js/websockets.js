@@ -12,32 +12,34 @@ export default function openWSCon() {
   socket.onmessage = function (event) {
     try {
       const data = JSON.parse(event.data);
-      if (data.messageType === "statusChange") {
+      if (data.messageType && data.messageType === "statusChange") {
         console.log("Status changed:", data);
         const nickName = data.userName;
         const isOnline = data.isOnline;
         updateUserStatus(nickName, isOnline);
       } else {
         console.log(data);
-        NotifyUser(data)
-      }
-      fetchandUpdateDiscussions()
-      let openDiscussion = document.querySelector(".discussionContainer")
-      if (openDiscussion && openDiscussion.classList.contains(data.sender_nickname)) {
-        console.log("received and checked");
-        document.querySelector('.chatMessages').append(div("message",).add(div("MsgContent", data.content), div(data.sent_at)))
-        scrollToBottom()
+        if (!data.me) {
+          NotifyUser(data)
+        }
+        fetchandUpdateDiscussions()
+        let openDiscussion = document.querySelector(".discussionContainer")
+        if (openDiscussion && openDiscussion.classList.contains(data.sender_nickname) || openDiscussion.classList.contains(data.receiver_nickname)) {
+          console.log("received and checked");
+          document.querySelector('.chatMessages').append(div(`message ${data.me ? "me" : ""}`,).add(div("MsgContent", data.content), div(data.sent_at)))
+          scrollToBottom()
+        }
       }
     } catch (err) {
       console.error("Failed to parse WebSocket message:", err);
 
     }
-    
+
   }
   socket.onclose = function () {
     console.log("WebSocket connection closed.");
   };
-  
+
   socket.onerror = function (error) {
     console.error("WebSocket error:", error);
   };

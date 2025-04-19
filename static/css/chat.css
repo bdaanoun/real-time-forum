@@ -159,13 +159,16 @@
   .chat {
     min-width: 200px;
   }
+
 }
 .chatWithUser {
   display: flex;
   flex-direction: column;
+  padding: 16px;
   overflow: hidden;
   justify-content: space-between;
-  background: #272931;
+  background: #30333d;
+  border-radius: 16px  16px 0 0 ;
   max-height: 400px;
 
 }
@@ -176,7 +179,24 @@
   flex-grow: 1;
   justify-content: space-between;
 }
+@media (max-width: 672px) {
+  .misagat {
+    flex-direction: column;
+  }
+  .chatWithUser {
+    position: fixed;
+    padding: 6px;
+  }
+}
+.chatBody {
+  overflow: auto;
 
+}
+.chats {
+  overflow-y: scroll;
+  min-height: 100px;
+  max-height: 400px;
+}
 .chatHead {
   display: flex;
   align-items: center;
@@ -213,6 +233,10 @@
 .MsgNotification {
   position: absolute;
   background-color: #272931;
+  display: flex;
+  border-radius: 16px;
+  gap: 8px;
+  align-items: center;
   z-index: 20;
   top: 100px;
   left: 45%;
