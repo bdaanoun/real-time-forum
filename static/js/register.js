@@ -18,7 +18,7 @@ export default function register() {
     let errorPlace = div("errorPlace")
      let logo = document.createElement("img")
     logo.src = "./static/svg/logo.svg"
-    let btn = button("Register", () => registerUser(nickname, age, gender, firstName, lastName, email, password, errorPlace))
+    let btn = button("Register", async() => { await registerUser(nickname, age, gender, firstName, lastName, email, password, errorPlace)})
 
     let registerDiv = div("register").add(
         div("tocenter").add(

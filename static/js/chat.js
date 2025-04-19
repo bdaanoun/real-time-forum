@@ -87,7 +87,7 @@ async function fetchAndupdateStatus() {
 
         const header = div("userCardHeader").add(avatar, statusDot)
         const name = div("nickname", user.nickname)
-        const userCard = div(`userCard`).add(header, name)
+        const userCard = div(`statusCard ${user.nickname}`).add(header, name)
         userCard.onclick = () => {
             document.querySelector(".chatBody")
             oneToOneChat(user.nickname)

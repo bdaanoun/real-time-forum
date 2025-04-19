@@ -3,11 +3,10 @@ import { appendUserHeader } from "./Headers.js";
 import div from "./utils/div.js";
 export default async function AppendLikedPosts() {
     document.body.innerHTML = ""
-    appendUserHeader("liked")
+    await appendUserHeader("liked")
     let likedPosts =  await fetchlikedPosts()
     let postsContainer =  div("postsContainer")
     console.log(likedPosts);
-    
     document.body.append(postsContainer)
     appendPosts(postsContainer ,  likedPosts)
 }

@@ -9,20 +9,21 @@ import ensureAuth from "./utils/ensureAuth.js";
 import openWSCon from "./websockets.js";
 import { fetchProfile } from "./Headers.js";
 import ChatPopup from "./chat.js";
+import button from "./utils/button.js";
 
 
 
-export default function navigateTo(path, data) {
+export default async function navigateTo(path, data) {
     history.pushState({}, '', path);
-    route(data);
+    await route(data);
 }
 
-window.addEventListener("popstate", () => {
-    route();
+window.addEventListener("popstate", async () => {
+    await route();
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
-    route();
+    await route();
 });
 
 async function route(data) {
@@ -33,7 +34,7 @@ async function route(data) {
         } else if (url === "/register") {
             register();
         } else {
-            navigateTo("/login");
+            await navigateTo("/login");
         }
         return
     }
@@ -41,19 +42,21 @@ async function route(data) {
     openWSCon()
     const postMatch = url.match(/^\/post\/(\d+)$/);
     if (postMatch) {
-        PostView();
+        await PostView();
         return;
     } else {
         switch (url) {
             case "/":
                 await Home();
-                
+                await ChatPopup()
                 break;
             case "/liked":
-                AppendLikedPosts();
+                await AppendLikedPosts();
+                await ChatPopup()
                 break;
             case "/created":
-                AppendCreatedPosts();
+                await AppendCreatedPosts();
+                await ChatPopup()
                 break;
             case "/login":
                 navigateTo("/")
@@ -66,18 +69,17 @@ async function route(data) {
                 break;
         }
     }
-    ChatPopup()
+    //await ChatPopup()
 }
 
 
 function pageNotFound() {
     document.body.innerHTML = "";
-
     const container = div("not-found").add(
         div("title", "404 - Page Not Found"),
-        div("message", "You seem to be lost, buddy."),
-        div("hint", "Try heading back to the homepage or double-check that URL.")
+        div("messagedz", "You seem to be lost, buddy."),
+        div("hint", "Try heading back to the homepage or double-check that URL."),
+        button("go home", () => { navigateTo("/") })
     );
-
     document.body.appendChild(container);
 }

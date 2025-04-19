@@ -18,21 +18,22 @@ export default function openWSCon() {
         const isOnline = data.isOnline;
         updateUserStatus(nickName, isOnline);
       } else {
-        console.log(data);
         if (!data.me) {
           NotifyUser(data)
         }
         fetchandUpdateDiscussions()
         let openDiscussion = document.querySelector(".discussionContainer")
-        if (openDiscussion && openDiscussion.classList.contains(data.sender_nickname) || openDiscussion.classList.contains(data.receiver_nickname)) {
-          let date = div('date hidden', (new Date(data.Sent_at)).toLocaleString())
-          let chhh = div(data.me ? "message me" : "message").add(div("MsgContent", data.content), date)
-          chhh.onclick = () => {
-            date.classList.toggle('hidden')
+        if (openDiscussion) {
+          if (openDiscussion.classList.contains(data.sender_nickname) || openDiscussion.classList.contains(data.receiver_nickname)) {
+            let date = div('date hidden', (new Date(data.Sent_at)).toLocaleString())
+            let chhh = div(data.me ? "message me" : "message").add(div("MsgContent", data.content), date)
+            chhh.onclick = () => {
+              date.classList.toggle('hidden')
+            }
+            console.log("received and checked", data.Sent_at);
+            document.querySelector('.chatMessages').append(chhh)
+            scrollToBottom()
           }
-          console.log("received and checked", data.Sent_at);
-          document.querySelector('.chatMessages').append(chhh)
-          scrollToBottom()
         }
       }
     } catch (err) {
@@ -59,31 +60,28 @@ function NotifyUser(data) {
     button("view", () => {
       oneToOneChat(data.sender_nickname)
     }))
-
-
   document.body.append(notification)
   setTimeout(() => {
     notification.remove()
   }, 3000);
 }
 function updateUserStatus(nickName, isOnline) {
-  // console.log(nickName, profileData.Nickname, isOnline);
-  // if (nickName === profileData.Nickname) {
-  //   return
-  // }
-  // let status = document.querySelector(`.${nickName}`)
-  // console.log(status);
-  // let userCard = document.querySelector(`.userCard.${nickName}`)
-  // let userCardStatus = userCard.querySelector('span');
-  // console.log(userCardStatus);
-
-  // if (isOnline) {
-  //   status.classList.add("online")
-  //   userCard.classList.remove("hidden")
-  //   userCardStatus.classList.add("online")
-  // } else {
-  //   status.classList.remove("online")
-  //   userCard.classList.add("hidden")
-  //   userCardStatus.classList.remove("online")
-  // }
+  console.log(nickName, profileData.Nickname, isOnline);
+  if (nickName === profileData.Nickname) {
+    return
+  }
+  let status = document.querySelector(`.statusDot.${nickName}`)
+  if (isOnline) {
+    status?.classList.add("online")
+    let img  = document.createElement("img")
+    img.src ="/static/svg/avatar.svg"
+    img.className = "userAvatar"
+    let spn   =  document.createElement("span")
+    spn.className  =  `statusDot ${nickName} ${isOnline? "online"  :  ""}`
+    document.querySelector(".status")?.append(div(`statusCard ${nickName}`).add(div("userCardHeader").add(img ,spn) ,  div("nickname" ,  nickName)))
+  } else {
+    status?.classList.remove("online")
+    let usercard = document.querySelector(`.statusCard.${nickName}`).remove()
+    console.log(usercard);
+  }
 }

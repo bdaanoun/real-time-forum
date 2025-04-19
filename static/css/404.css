@@ -3,28 +3,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   color: #eee;
   font-family: Verdana, sans-serif;
   text-align: center;
-  padding: 20px;
+  gap: 16px;
+  height: 100%;
 }
 
-/* Title */
 .not-found .title {
-  font-size: 4em;
+  line-height: normal;
+  font-size: xx-large;
   color: #ff4c4c;
-  margin-bottom: 20px;
 }
-
-/* Message */
-.not-found .message {
-  font-size: 1.6em;
+.not-found .messagedz {
+  font-size: large;
   color: #ccc;
-  margin-bottom: 10px;
 }
 
-/* Hint */
 .not-found .hint {
   font-size: 1em;
   color: #888;

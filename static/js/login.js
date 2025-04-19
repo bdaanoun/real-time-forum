@@ -12,7 +12,7 @@ export default async function login() {
     let errorPlace = div("errorPlace")
     let logo = document.createElement("img")
     logo.src = "./static/svg/logo.svg"
-    let btn = button("login", () => logUser(name, pass, errorPlace));
+    let btn = button("login", async() => {await logUser(name, pass, errorPlace)});
     let login = div("login").add(
         div("tocenter").add(
             div("texts",).add(

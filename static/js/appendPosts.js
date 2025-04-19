@@ -6,12 +6,14 @@ import navigateTo from "./main.js";
 import createReactionElement from "./reaction.js";
 
 export default async function appendPosts(postsContainer, posts) {
-
+  console.log("now appending :" , posts);
+  
   // postsContainer.innerHTML = ''
 
   for (const post of posts) {
     postsContainer.append(await PostCard(post));
   }
+
 }
 
 export const Post = (postData) => {
