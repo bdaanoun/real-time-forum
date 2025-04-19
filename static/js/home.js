@@ -5,8 +5,7 @@ import div from "./utils/div.js";
 import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 import { offset } from "./offset.js";
-import ChatPopup, { throttle } from "./chat.js";
-import openWSCon from "./websockets.js";
+import  { throttle } from "./chat.js";
 export default async function Home() {
   offset.reset()
   document.body.innerHTML = "";
