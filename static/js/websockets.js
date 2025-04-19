@@ -78,7 +78,9 @@ function updateUserStatus(nickName, isOnline) {
     img.className = "userAvatar"
     let spn   =  document.createElement("span")
     spn.className  =  `statusDot ${nickName} ${isOnline? "online"  :  ""}`
-    document.querySelector(".status")?.append(div(`statusCard ${nickName}`).add(div("userCardHeader").add(img ,spn) ,  div("nickname" ,  nickName)))
+    let statCard = div(`statusCard ${nickName}`).add(div("userCardHeader").add(img ,spn) ,  div("nickname" ,  nickName))
+    statCard.onclick = ()=> {oneToOneChat(nickName)}
+    document.querySelector(".status")?.append(statCard)
   } else {
     status?.classList.remove("online")
     let usercard = document.querySelector(`.statusCard.${nickName}`).remove()

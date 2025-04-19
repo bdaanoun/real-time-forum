@@ -23,8 +23,6 @@ export default async function Home() {
 async function fetchMorePost(postsContainer) {
   console.log(document.body.scrollTop + 1000, document.body.scrollHeight);
   if (document.body.scrollTop + 1000 >= document.body.scrollHeight) {
-    console.log("at the bottom");
-
     let posts = await fetchPosts();
     await appendPosts(postsContainer, posts);
   }
