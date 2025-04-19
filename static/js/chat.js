@@ -42,7 +42,7 @@ export default async function ChatPopup() {
 
     // document.addEventListener("click", (e) => {
     //     const chatBody = document.querySelector(".chatBody")
-      
+
     //     if (!popup.contains(e.target) && openClose.classList.contains("rotated")) {
     //         chatBody?.classList.add("hidden")
     //         openClose.classList.remove("rotated")
@@ -51,8 +51,9 @@ export default async function ChatPopup() {
 }
 export async function fetchandUpdateDiscussions() {
     let discussionsList = await getDscussionsList()
+
     let chatsDiv = document.querySelector(".chats")
-    if(chatsDiv){
+    if (chatsDiv) {
         chatsDiv.innerHTML = ""
     }
     discussionsList?.forEach((user) => {
@@ -69,7 +70,7 @@ export async function fetchandUpdateDiscussions() {
             oneToOneChat(user.nickname)
             console.log(`Starting chat with ${user.nickname}`)
         }
-        if (chatsDiv){
+        if (chatsDiv) {
             chatsDiv.append(discussionCard)
         }
     })
@@ -98,7 +99,7 @@ async function fetchAndupdateStatus() {
 export function scrollToBottom() {
     const messagesContainer = document.querySelector('.chatMessages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
+
 }
 async function getDscussionsList() {
     let resp = await fetch(`api/GetDiscussions`, {
@@ -183,17 +184,22 @@ export async function oneToOneChat(nickname) {
     document.querySelector('.chatWithUser').innerHTML = ""
     document.querySelector('.chatWithUser').append(chatOne);
     scrollToBottom()
-    chatMessages.addEventListener('scroll', async () => {
+    let throtledFetch = throttle(fetchPrivateMessage, 1000)
+    chatMessages.addEventListener('scroll', async () => {        
         if (chatMessages.scrollTop === 0) {
-            let oldMsgs = await fetchPrivateMessage(nickname )
+            var prevHeight  = chatMessages.scrollHeight            
+            let oldMsgs  =  await throtledFetch(nickname)
             if (oldMsgs) {
-                
                 oldMsgs.reverse().forEach((msg) => {
                     if (msg.sender_nickname === nickname) {
                         chatMessages.prepend(div("message",).add(div("MsgContent", msg.content), div(msg.sent_at)))
                     } else {
                         chatMessages.prepend(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
                     }
+                })
+                requestAnimationFrame(()=>{
+                    let newHeight = chatMessages.scrollHeight
+                    chatMessages.scrollTop =  newHeight -prevHeight
                 })
             } 
         }
@@ -232,4 +238,15 @@ function sendMessage(me, to, content) {
     //document.querySelector(".chatMessages").append(div("message me").add(div("MsgContent", content), div(Date.now())))
     fetchandUpdateDiscussions()
     scrollToBottom()
+}
+
+function throttle(func, delay) {
+    let lastCall = 0;
+    return function (...args) {
+        const now = Date.now();
+        if (now - lastCall >= delay) {
+            lastCall = now;
+            return func.apply(this, args);
+        }
+    };
 }
