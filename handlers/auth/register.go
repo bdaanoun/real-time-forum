@@ -114,7 +114,7 @@ func ValidateUser(user User) error {
 	if strings.TrimSpace(user.Nickname) == "" ||
 		strings.TrimSpace(user.Age) == "" ||
 		strings.TrimSpace(user.Gender) == "" ||
-		strings.Contains(strings.TrimSpace(user.FirstName)) == "" ||
+		strings.TrimSpace(user.FirstName) == "" ||
 		strings.TrimSpace(user.LastName) == "" ||
 		strings.TrimSpace(user.Email) == "" ||
 		strings.TrimSpace(user.Password) == "" {
