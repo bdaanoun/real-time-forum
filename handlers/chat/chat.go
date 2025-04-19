@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	"forum/handlers/auth"
 	database "forum/handlers/dataBase"
@@ -29,6 +30,7 @@ type Message struct {
 	To      string `json:"receiver_nickname"`
 	Content string `json:"content"`
 	Me      bool   `json:"me"`
+	Sent_at string `json :  "sent_at"`
 }
 
 func saveMessageToDB(senderNickname, receiverNickname, content string) error {
@@ -94,6 +96,7 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println("message saved to db")
 		msg.From = username
+		msg.Sent_at = time.Now().Format(time.RFC3339)
 		fmt.Println(msg)
 		RedirectMessage(msg)
 	}

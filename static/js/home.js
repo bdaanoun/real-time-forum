@@ -5,10 +5,9 @@ import div from "./utils/div.js";
 import fetchPosts from "./fetchposts.js";
 import setupCategoryFilters from "./filters.js"
 import { offset } from "./offset.js";
-import ChatPopup from "./chat.js";
+import ChatPopup, { throttle } from "./chat.js";
 import openWSCon from "./websockets.js";
 export default async function Home() {
-  
   offset.reset()
   document.body.innerHTML = "";
   await appendUserHeader("home")
@@ -18,15 +17,18 @@ export default async function Home() {
   document.body.append(postsContainer);
 
   let posts = await fetchPosts();
-  console.log("m in home");
-  appendPosts(postsContainer , posts)
-  
-  window.addEventListener("scroll", async () => {
-    const scrollPosition = window.innerHeight + window.scrollY;
-    const nearBottom = document.body.offsetHeight - 200;
-    if (scrollPosition >= nearBottom) {
-      let posts = await fetchPosts();
-      appendPosts(postsContainer, posts)
-    }
-  });
+  await appendPosts(postsContainer, posts)
+  let throttledFetch = throttle(fetchMorePost, 2000)
+  document.body.addEventListener("scroll", async ()=>{
+    await throttledFetch()
+  })}
+
+async function fetchMorePost() {
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const nearBottom = document.body.offsetHeight - 200;
+
+  if (scrollPosition >= nearBottom) {
+    let posts = await fetchPosts()
+    await appendPosts(postsContainer, posts);
+  }
 }

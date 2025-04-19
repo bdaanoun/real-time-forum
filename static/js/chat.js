@@ -99,7 +99,6 @@ async function fetchAndupdateStatus() {
 export function scrollToBottom() {
     const messagesContainer = document.querySelector('.chatMessages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
 }
 async function getDscussionsList() {
     let resp = await fetch(`api/GetDiscussions`, {
@@ -155,7 +154,7 @@ export async function oneToOneChat(nickname) {
     if (messages) {
         messages.forEach((msg) => {
             let date = div('date hidden', (new Date(msg.sent_at)).toLocaleString())
-            let chhh = div(msg.sender_nickname === nickname ? "message me" : "message").add(div("MsgContent", msg.content),date)
+            let chhh = div(msg.sender_nickname === nickname ? "message" : "message me").add(div("MsgContent", msg.content),date)
             chhh.onclick = () => {
                 date.classList.toggle('hidden')
             }
@@ -257,7 +256,7 @@ function sendMessage(me, to, content) {
     scrollToBottom()
 }
 
-function throttle(func, delay) {
+export function throttle(func, delay) {
     let lastCall = 0;
     return function (...args) {
         const now = Date.now();

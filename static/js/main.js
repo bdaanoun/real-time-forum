@@ -25,7 +25,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     route();
 });
 
-
 async function route(data) {
     const url = window.location.pathname;
     if (!await ensureAuth()) {

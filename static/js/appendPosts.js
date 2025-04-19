@@ -7,7 +7,7 @@ import createReactionElement from "./reaction.js";
 
 export default async function appendPosts(postsContainer, posts) {
 
-  postsContainer.innerHTML = ''
+  // postsContainer.innerHTML = ''
 
   for (const post of posts) {
     postsContainer.append(await PostCard(post));

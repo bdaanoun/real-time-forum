@@ -25,8 +25,13 @@ export default function openWSCon() {
         fetchandUpdateDiscussions()
         let openDiscussion = document.querySelector(".discussionContainer")
         if (openDiscussion && openDiscussion.classList.contains(data.sender_nickname) || openDiscussion.classList.contains(data.receiver_nickname)) {
-          console.log("received and checked");
-          document.querySelector('.chatMessages').append(div(`message ${data.me ? "me" : ""}`,).add(div("MsgContent", data.content), div(data.sent_at)))
+          let date = div('date hidden', (new Date(data.Sent_at)).toLocaleString())
+          let chhh = div(data.me ? "message me" : "message").add(div("MsgContent", data.content), date)
+          chhh.onclick = () => {
+            date.classList.toggle('hidden')
+          }
+          console.log("received and checked", data.Sent_at);
+          document.querySelector('.chatMessages').append(chhh)
           scrollToBottom()
         }
       }
@@ -54,7 +59,7 @@ function NotifyUser(data) {
     button("view", () => {
       oneToOneChat(data.sender_nickname)
     }))
-    
+
 
   document.body.append(notification)
   setTimeout(() => {

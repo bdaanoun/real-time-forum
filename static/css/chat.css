@@ -71,15 +71,21 @@
 
 .message {
   align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   max-width: 70%;
 }
 
 .message.me .MsgContent {
   background: #0071E3;
+  width: fit-content;
 }
 
 .message.me {
   align-self: flex-end;
+  align-items: end;
+  justify-items: end;
 }
 .date {
   font-size: smaller;
