@@ -141,6 +141,7 @@ h3 {
     position: absolute;
     width: 0%;
     height: 2px;
+
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 0.3s ease-in-out;
@@ -213,7 +214,7 @@ h3 {
         align-items: center;
         justify-content: center;
         right: 0px;
-        z-index: 3;
+        z-index: 100;
         top: 0px;
         width: 70%;
         height: 100vh;
@@ -243,7 +244,7 @@ h3 {
         font-size: medium;
         display: block;
         color: white;
-        z-index: 4;
+        z-index: 101;
         cursor: pointer;
         order: 3;
     }
