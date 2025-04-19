@@ -3,10 +3,16 @@ package auth
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
+	"strconv"
+	"strings"
+
 	dataBase "forum/handlers/dataBase"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,10 +37,11 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	if len(user.Password) < 4 {
-		http.Error(w, "Password must be at least 4 characters long", http.StatusBadRequest)
+	if err := ValidateUser(user); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	if err := checkUserExistence(user.Nickname, user.Email); err != nil {
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
@@ -89,16 +96,65 @@ func insertUser(db *sql.DB, user User, hashedPassword string) error {
 	VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 	_, err := db.Exec(query,
-		user.Nickname,
+		strings.ToLower(user.Nickname),
 		user.Age,
-		user.Gender,
-		user.FirstName,
-		user.LastName,
-		user.Email,
+		strings.ToLower(user.Gender),
+		strings.ToLower(user.FirstName),
+		strings.ToLower(user.LastName),
+		strings.ToLower(user.Email),
 		hashedPassword,
 	)
 	if err != nil {
 		log.Println("Error inserting user into database:", err)
 	}
 	return err
+}
+
+func ValidateUser(user User) error {
+	if strings.TrimSpace(user.Nickname) == "" ||
+		strings.TrimSpace(user.Age) == "" ||
+		strings.TrimSpace(user.Gender) == "" ||
+		strings.TrimSpace(user.FirstName) == "" ||
+		strings.TrimSpace(user.LastName) == "" ||
+		strings.TrimSpace(user.Email) == "" ||
+		strings.TrimSpace(user.Password) == "" {
+		return errors.New("please fill in all fields")
+	}
+
+	age, err := strconv.Atoi(user.Age)
+	if err != nil || age < 16 || age > 80 {
+		return errors.New("the age should be between 16 and 80. GO AWAY")
+	}
+
+	if len(user.Nickname) > 15 {
+		return errors.New("nickname should be less or equal to 15 characters")
+	}
+
+	nicknameRegex := regexp.MustCompile(`^[a-zA-Z_.]+$`)
+	if !nicknameRegex.MatchString(user.Nickname) {
+		return errors.New("nickname must not contain special characters OR numbers")
+	}
+	nameRegex := regexp.MustCompile(`^[a-zA-Z]+$`)
+	if !nameRegex.MatchString(user.FirstName) {
+		return errors.New("first name must contain only letters")
+	}
+	if !nameRegex.MatchString(user.LastName) {
+		return errors.New("last name must contain only letters")
+	}
+	switch strings.ToLower(user.Gender) {
+	case "male", "female":
+
+	default:
+		return errors.New("gender must be one of: male, female")
+	}
+
+	emailRegex := regexp.MustCompile(`^[^\s@]+@[^\s@]+\.[^\s@]+$`)
+	if !emailRegex.MatchString(user.Email) {
+		return errors.New("invalid email format")
+	}
+
+	if len(user.Password) < 6 {
+		return errors.New("password must be at least 6 characters long")
+	}
+	return nil
 }

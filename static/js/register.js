@@ -6,8 +6,8 @@ import link from "./utils/link.js";
 import select from "./utils/select.js";
 export default function register() {
     console.log("in register");
-    
-    document.body.innerHTML =""
+
+    document.body.innerHTML = ""
     let nickname = input("text", "Nickname")
     let age = input("number", "Age")
     let gender = select("gender", ["Male", "Female"])
@@ -16,14 +16,14 @@ export default function register() {
     let email = input("email", "E-mail")
     let password = input("password", "Password")
     let errorPlace = div("errorPlace")
-     let logo = document.createElement("img")
+    let logo = document.createElement("img")
     logo.src = "./static/svg/logo.svg"
     let btn = button("Register", async() => { await registerUser(nickname, age, gender, firstName, lastName, email, password, errorPlace)})
 
     let registerDiv = div("register").add(
         div("tocenter").add(
             div("texts").add(
-               logo ,  div("smalltext", "Create a new account")
+                logo, div("smalltext", "Create a new account")
             ),
             div("form").add(
                 nickname,
@@ -34,8 +34,8 @@ export default function register() {
                 email,
                 password,
                 errorPlace,
-                btn ,
-                div("smalltext" , "already have an account? ").add(link("login", "/login", () => navigateTo("/login")))
+                btn,
+                div("smalltext", "already have an account? ").add(link("login", "/login", () => navigateTo("/login")))
             )
 
         )
@@ -45,10 +45,25 @@ export default function register() {
 }
 
 async function registerUser(nickname, age, gender, firstName, lastName, email, password, errorPlace) {
-    if (!nickname.value || !age.value || !gender.value || !firstName.value || !lastName.value || !email.value || !password.value) {
-        errorPlace.textContent = "Please fill in all fields"
-        return
-    }
+
+
+    // if (!nickname.value || !age.value || !gender.value || !firstName.value || !lastName.value || !email.value || !password.value) {
+    //     errorPlace.textContent = "Please fill in all fields"
+    // } else if (parseInt(age.value) <= 16) {
+    //     console.log(typeof (age.value));
+    //     errorPlace.textContent = "The age should be greater than 16 years. GO AWAY"
+    // } else if (nickname.value.length >= 12) {
+    //     errorPlace.textContent = "Nickname should be less than 8 characters."
+    // } else if (!/^[a-zA-Z0-9_]+$/.test(nickname.value)) {
+    //     errorPlace.textContent = "Nickname must not contain special characters.";
+    // } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    //     errorPlace.textContent = "Invalid email format.";
+    // } else if (password.value.length < 6) {
+    //     errorPlace.textContent = "Password must be at least 6 characters long.";
+    // } else {
+    //     errorPlace.textContent = ""
+    //     console.log("Form is valid, ready to submit!")
+    // }
 
     let resp = await fetch("/api/Register", {
         method: "POST",
@@ -75,6 +90,6 @@ async function registerUser(nickname, age, gender, firstName, lastName, email, p
         let errorMessage = data || "Failed to register"
         errorPlace.textContent = errorMessage
         console.log(errorMessage)
-    } 
+    }
 }
 

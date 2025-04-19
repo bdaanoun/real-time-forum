@@ -3,7 +3,6 @@ import input from "./utils/input.js"
 import button from "./utils/button.js"
 import link from "./utils/link.js"
 import navigateTo from "./main.js"
-import route from "./main.js"
 
 export default async function login() {
     document.body.innerHTML = ""
@@ -46,7 +45,6 @@ async function logUser(name, pass, errorPlace) {
     })
 
     if (resp.ok) {
-        console.log("logged successfully")
         navigateTo('/')
     } else {
         let errorMessage = await resp.text()
