@@ -184,11 +184,10 @@ export async function oneToOneChat(nickname) {
     document.querySelector('.chatWithUser').innerHTML = ""
     document.querySelector('.chatWithUser').append(chatOne);
     scrollToBottom()
-    let throtledFetch = throttle(fetchPrivateMessage, 2000)
-    chatMessages.addEventListener('scroll', async () => {
-        console.log(chatMessages.scrollTop);
-        
+    let throtledFetch = throttle(fetchPrivateMessage, 1000)
+    chatMessages.addEventListener('scroll', async () => {        
         if (chatMessages.scrollTop === 0) {
+            var prevHeight  = chatMessages.scrollHeight            
             let oldMsgs  =  await throtledFetch(nickname)
             if (oldMsgs) {
                 oldMsgs.reverse().forEach((msg) => {
@@ -197,6 +196,10 @@ export async function oneToOneChat(nickname) {
                     } else {
                         chatMessages.prepend(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
                     }
+                })
+                requestAnimationFrame(()=>{
+                    let newHeight = chatMessages.scrollHeight
+                    chatMessages.scrollTop =  newHeight -prevHeight
                 })
             } 
         }
