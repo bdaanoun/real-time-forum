@@ -46,13 +46,18 @@ export default function openWSCon() {
 
 
 
+
 function NotifyUser(data) {
   let notification = div("MsgNotification", `new message received from ${data.sender_nickname}`).add(
     button("view", () => {
       oneToOneChat(data.sender_nickname)
     }))
+    
 
   document.body.append(notification)
+  setTimeout(() => {
+    notification.remove()
+  }, 3000);
 }
 function updateUserStatus(nickName, isOnline) {
   // console.log(nickName, profileData.Nickname, isOnline);

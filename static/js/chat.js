@@ -154,11 +154,18 @@ export async function oneToOneChat(nickname) {
     let chatMessages = div("chatMessages")
     if (messages) {
         messages.forEach((msg) => {
-            if (msg.sender_nickname === nickname) {
-                chatMessages.append(div("message",).add(div("MsgContent", msg.content), div(msg.sent_at)))
-            } else {
-                chatMessages.append(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+            let date = div('date hidden', (new Date(msg.sent_at)).toLocaleString())
+            let chhh = div(msg.sender_nickname === nickname ? "message me" : "message").add(div("MsgContent", msg.content),date)
+            chhh.onclick = () => {
+                date.classList.toggle('hidden')
             }
+
+            if (msg.sender_nickname === nickname) {
+                chatMessages.append(chhh)
+
+            } else {
+                chatMessages.append(chhh)
+            }            
         })
     } else {
         chatMessages.add("no messages ")
@@ -178,32 +185,40 @@ export async function oneToOneChat(nickname) {
         ))
 
     back.onclick = () => {
-        console.log("removed");
         document.querySelector(".chatWithUser").innerHTML = ""
     }
     document.querySelector('.chatWithUser').innerHTML = ""
     document.querySelector('.chatWithUser').append(chatOne);
     scrollToBottom()
     let throtledFetch = throttle(fetchPrivateMessage, 1000)
-    chatMessages.addEventListener('scroll', async () => {        
+    chatMessages.addEventListener('scroll', async () => {
         if (chatMessages.scrollTop === 0) {
-            var prevHeight  = chatMessages.scrollHeight            
-            let oldMsgs  =  await throtledFetch(nickname)
+            var oldHeight = chatMessages.scrollHeight
+            let oldMsgs = await throtledFetch(nickname)
             if (oldMsgs) {
                 oldMsgs.reverse().forEach((msg) => {
+
+                    let date = div('date hidden', (new Date(msg.sent_at)).toLocaleString())
+                    let chhh = div("message",).add(div("MsgContent", msg.content), date)
+                    chhh.onclick = () => {
+                        date.classList.toggle('hidden')
+                    }
                     if (msg.sender_nickname === nickname) {
-                        chatMessages.prepend(div("message",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+                        chatMessages.prepend(chhh)
+
                     } else {
-                        chatMessages.prepend(div("message me",).add(div("MsgContent", msg.content), div(msg.sent_at)))
+                        chatMessages.prepend(chhh)
                     }
                 })
-                requestAnimationFrame(()=>{
+                requestAnimationFrame(() => {
                     let newHeight = chatMessages.scrollHeight
-                    chatMessages.scrollTop =  newHeight -prevHeight
+                    chatMessages.scrollTop = newHeight - oldHeight
                 })
-            } 
+            }
         }
     });
+
+
 }
 
 async function fetchPrivateMessage(nickName) {
@@ -218,7 +233,9 @@ async function fetchPrivateMessage(nickName) {
         }
 
         let messages = await resp.json();
-        MsgsOffset.increase(messages.length)
+        if (messages) {
+            MsgsOffset.increase(messages.length)
+        }
         return messages;
     } catch (error) {
         console.error("Error fetching messages:", error);
