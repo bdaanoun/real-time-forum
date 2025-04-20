@@ -15,7 +15,7 @@ export default async function Home() {
   document.body.append(postsContainer);
   let posts = await fetchPosts();
   await appendPosts(postsContainer, posts)
-  let debouncedFetch = debounce(fetchMorePost, 1000)
+  let debouncedFetch = debounce(fetchMorePost, 500)
   document.body.addEventListener("scroll", async () => {
     debouncedFetch(postsContainer)
   })

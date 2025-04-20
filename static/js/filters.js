@@ -56,6 +56,6 @@ async function filterByCat(event) {
     console.log('kjhlkj');
     
     console.log('ggg',res);
-    
+    document.querySelector('.postsContainer').innerHTML =  ""
     appendPosts(document.querySelector('.postsContainer'), res)
 }
