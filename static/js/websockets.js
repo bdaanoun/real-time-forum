@@ -87,3 +87,7 @@ function updateUserStatus(nickName, isOnline) {
     console.log(usercard);
   }
 }
+
+// onconnect = function(e) {
+
+// }

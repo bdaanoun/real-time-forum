@@ -28,14 +28,13 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to logout", http.StatusInternalServerError)
 		return
 	}
-
-	// Remove the session cookie from the browser
+	
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
 		Value:    "",
-		Expires:  time.Unix(0, 0), // Expire immediately
+		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 		Path:     "/",
 	})
 

@@ -89,6 +89,16 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 		if msg.Content == "" {
 			return
 		}
+
+		// query := `SELECT user_id FROM sessions WHERE nickname = ?`
+		// errs := database.ForumDB.QueryRow(query, username).Scan(&userID)
+
+		// if errs == sql.ErrNoRows {
+		// 	conn.Close()
+		// 	http.Error(w, "session expired", http.StatusUnauthorized)
+		// } else if errs != nil {
+
+		// }
 		err = saveMessageToDB(username, msg.To, msg.Content)
 		if err != nil {
 			fmt.Println("Error saving message to DB:", err)

@@ -10,11 +10,9 @@ import (
 	"forum/handlers/auth"
 	"forum/handlers/chat"
 
-	// Auth "forum/handlers/auth"
 	Comment "forum/handlers/comment"
 	Post "forum/handlers/posts"
 
-	// "forum/handlers/chat"
 	database "forum/handlers/dataBase"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -65,7 +63,7 @@ func sessionDeleter() {
 			if err != nil {
 				log.Println("Error cleaning expired sessions:", err)
 			}
-			time.Sleep(10 * time.Second)
+			time.Sleep(1 * time.Second)
 		}
 	}()
 }

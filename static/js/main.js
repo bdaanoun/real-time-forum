@@ -6,17 +6,22 @@ import PostView from "./PostView.js";
 import register from "./register.js";
 import div from "./utils/div.js";
 import ensureAuth from "./utils/ensureAuth.js";
-import openWSCon from "./websockets.js";
+import openWSCon, { socket } from "./websockets.js";
 import { fetchProfile } from "./Headers.js";
 import ChatPopup from "./chat.js";
 import button from "./utils/button.js";
-
-
 
 export default async function navigateTo(path, data) {
     history.pushState({}, '', path);
     await route(data);
 }
+window.addEventListener('storage', (event)=> {
+    console.log("in storage listener" ,  event.key);
+    if (event.key === 'logout') {
+      socket.close()
+      navigateTo("/login")
+    }
+});
 
 window.addEventListener("popstate", async () => {
     await route();
