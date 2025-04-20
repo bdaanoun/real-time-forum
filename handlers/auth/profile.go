@@ -1,10 +1,11 @@
 package auth
 
 import (
+	"database/sql"
 	"encoding/json"
-	// "forum/handlers/auth"
-	database "forum/handlers/dataBase"
 	"net/http"
+
+	database "forum/handlers/dataBase"
 )
 
 type UserProfile struct {
@@ -24,10 +25,12 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	var uu UserProfile
 	errD := database.ForumDB.QueryRow(`SELECT nickname, email , age, first_name, last_name FROM users WHERE id = ?`,
 		userID).Scan(&uu.Nickname, &uu.Email, &uu.Age, &uu.FirstName, &uu.LastName)
-	if errD != nil {
+	if errD == sql.ErrNoRows {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	} else if errD != nil {
 		http.Error(w, "Error querying database", http.StatusInternalServerError)
 		return
-
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

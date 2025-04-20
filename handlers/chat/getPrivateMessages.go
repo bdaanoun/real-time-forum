@@ -36,8 +36,6 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing nickname or otherser parameter", http.StatusBadRequest)
 		return
 	}
-
-	// Extract offset from query, default to 0
 	offsetParam := r.URL.Query().Get("offset")
 	offset := 0
 	if offsetParam != "" {
@@ -51,8 +49,8 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 		SELECT 
 			m.content, 
 			m.sent_at,
-			sender.nickname AS sender_nickname,
-			receiver.nickname AS receiver_nickname
+			sender.nickname ,
+			receiver.nickname
 		FROM messages m
 		JOIN users sender ON sender.id = m.sender_id
 		JOIN users receiver ON receiver.id = m.receiver_id
@@ -79,7 +77,6 @@ func GetMessagesHandler(w http.ResponseWriter, r *http.Request) {
 		messages = append(messages, msg)
 	}
 
-	// Sort to chronological (oldest to newest)
 	sort.Slice(messages, func(i, j int) bool {
 		return messages[i].SentAt.Before(messages[j].SentAt)
 	})

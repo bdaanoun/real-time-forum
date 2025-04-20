@@ -63,8 +63,11 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "unable to extract nickname from session", http.StatusInternalServerError)
 		return
 	}
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	fmt.Println("in chatHandler")
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		// origin := r.Header.Get("Origin")
+		// return origin == "http://localhost:8080"
+		return true
+	}
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("Upgrade failed:", err)
@@ -73,7 +76,6 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	handleNewConnection(username, conn)
 	fmt.Println(username, "connected")
-
 	defer func() {
 		removeConnection(username, conn)
 		fmt.Println(username, "disconnected")
@@ -82,32 +84,19 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 		var msg Message
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			fmt.Println("here")
 			fmt.Println("Read error:", err)
 			break
 		}
 		if msg.Content == "" {
 			return
 		}
-
-		// query := `SELECT user_id FROM sessions WHERE nickname = ?`
-		// errs := database.ForumDB.QueryRow(query, username).Scan(&userID)
-
-		// if errs == sql.ErrNoRows {
-		// 	conn.Close()
-		// 	http.Error(w, "session expired", http.StatusUnauthorized)
-		// } else if errs != nil {
-
-		// }
 		err = saveMessageToDB(username, msg.To, msg.Content)
 		if err != nil {
 			fmt.Println("Error saving message to DB:", err)
 			break
 		}
-		fmt.Println("message saved to db")
 		msg.From = username
 		msg.Sent_at = time.Now().Format(time.RFC3339)
-		fmt.Println(msg)
 		RedirectMessage(msg)
 	}
 }
@@ -139,7 +128,6 @@ func RedirectMessage(msg Message) {
 
 			err := targetConns[i].WriteJSON(msg)
 			if err != nil {
-				// Remove bad connection
 				targetConns = append(targetConns[:i], targetConns[i+1:]...)
 				clients[msg.To] = targetConns
 				if len(targetConns) == 0 {
@@ -150,7 +138,6 @@ func RedirectMessage(msg Message) {
 			}
 		}
 	}
-
 	if sourceConns, ok := clients[msg.From]; ok {
 		for i := 0; i < len(sourceConns); {
 			outMsg := msg
@@ -168,8 +155,6 @@ func RedirectMessage(msg Message) {
 			}
 		}
 	}
-
-	fmt.Println("Message sent to both sender and recipient")
 }
 
 func broadcastToAll(msg StatusChangeMessage) {

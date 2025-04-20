@@ -9,6 +9,7 @@ import (
 	dataBase "forum/handlers/dataBase"
 )
 
+
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
@@ -37,6 +38,5 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		Secure:   false,
 		Path:     "/",
 	})
-
 	fmt.Fprintln(w, "Logged out successfully")
 }

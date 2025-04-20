@@ -96,12 +96,12 @@ func insertUser(db *sql.DB, user User, hashedPassword string) error {
 	VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 	_, err := db.Exec(query,
-		strings.ToLower(user.Nickname),
+		user.Nickname,
 		user.Age,
-		strings.ToLower(user.Gender),
-		strings.ToLower(user.FirstName),
-		strings.ToLower(user.LastName),
-		strings.ToLower(user.Email),
+		user.Gender,
+		user.FirstName,
+		user.LastName,
+		user.Email,
 		hashedPassword,
 	)
 	if err != nil {
@@ -126,8 +126,8 @@ func ValidateUser(user User) error {
 		return errors.New("the age should be between 16 and 80. GO AWAY")
 	}
 
-	if len(user.Nickname) > 15 {
-		return errors.New("nickname should be less or equal to 15 characters")
+	if len(user.Nickname) >= 24 {
+		return errors.New("nickname should be less or equal to 24 characters")
 	}
 
 	nicknameRegex := regexp.MustCompile(`^[a-zA-Z_.]+$`)

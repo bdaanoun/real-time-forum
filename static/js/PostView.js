@@ -35,7 +35,7 @@ const PostView = async (postData) => {
     }
   }
 
-  const commentsList = div("commentsList");
+  const commentsList = div("commentsList")
 
   const inputField = input("text", "Write a comment...");
   inputField.classList.add("commInput");

@@ -180,7 +180,7 @@ export async function oneToOneChat(nickname) {
         ),
         div("chatInputArea").add(
             myInput,
-            button("send", () => sendMessage(profileData.nickname, nickname, myInput.value))
+            button("send", () => sendMessage(profileData.nickname, nickname, myInput))
         ))
 
     back.onclick = () => {
@@ -216,8 +216,6 @@ export async function oneToOneChat(nickname) {
             }
         }
     });
-
-
 }
 
 async function fetchPrivateMessage(nickName) {
@@ -241,8 +239,8 @@ async function fetchPrivateMessage(nickName) {
     }
 }
 
-function sendMessage(me, to, content) {
-    content  = content.trim()
+function sendMessage(me, to, input) {
+    let content  = input.value.trim()
     if (!content) {
         return
     }
@@ -251,7 +249,7 @@ function sendMessage(me, to, content) {
         receiver_nickname: to
     };
     socket.send(JSON.stringify(message))
-    //document.querySelector(".chatMessages").append(div("message me").add(div("MsgContent", content), div(Date.now())))
+    input.value = ""
     fetchandUpdateDiscussions()
     scrollToBottom()
 }

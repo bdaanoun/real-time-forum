@@ -10,6 +10,7 @@ import (
 )
 
 type CommentResponse struct {
+	Id int `json:"id"`
 	Username   string    `json:"username"`
 	First_name string    `json:"first_name"`
 	Last_name  string    `json:"last_name"`
@@ -58,13 +59,13 @@ func SetCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	row := database.ForumDB.QueryRow(`
-                SELECT users.nickname, users.first_name, users.last_name,  comments.created_at, comments.content
+                SELECT  comments.id,  users.nickname, users.first_name, users.last_name,  comments.created_at, comments.content
                 FROM comments
                 JOIN users ON comments.user_id = users.id
                 WHERE comments.id = ?`, lastID)
 
 	var commentResponse CommentResponse
-	err = row.Scan(&commentResponse.Username, &commentResponse.First_name, &commentResponse.Last_name, &commentResponse.CreatedAt, &commentResponse.Content)
+	err = row.Scan(&commentResponse.Id ,  &commentResponse.Username, &commentResponse.First_name, &commentResponse.Last_name, &commentResponse.CreatedAt, &commentResponse.Content)
 	if err != nil {
 		http.Error(w, "Failed to retrieve created comment", http.StatusInternalServerError)
 		return

@@ -12,11 +12,11 @@ import (
 )
 
 type UserStatus struct {
-	ID                 int        `json:"id"`
-	Nickname           string     `json:"nickname"`
-	IsOnline           bool       `json:"is_online"`
-	LastMessageContent *string    `json:"last_message_content"`
-	LastMessageSentAt  *time.Time `json:"last_message_sent_at"`
+	ID                 int       `json:"id"`
+	Nickname           string    `json:"nickname"`
+	IsOnline           bool      `json:"is_online"`
+	LastMessageContent string    `json:"last_message_content"`
+	LastMessageSentAt  time.Time `json:"last_message_sent_at"`
 }
 
 func GetDiscussionsListHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +26,7 @@ func GetDiscussionsListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := `
+	akhirMisag := `
 	SELECT
 		u.id,
 		u.nickname,
@@ -52,7 +52,7 @@ func GetDiscussionsListHandler(w http.ResponseWriter, r *http.Request) {
 	WHERE u.id <> ?;
 	`
 
-	rows, err := database.ForumDB.Query(query, userID, userID, userID, userID, userID)
+	rows, err := database.ForumDB.Query(akhirMisag, userID, userID, userID, userID, userID)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
@@ -75,7 +75,6 @@ func GetDiscussionsListHandler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		// Skip users with no discussion
 		if !lastMessageContent.Valid && !lastMessageSentAt.Valid {
 			continue
 		}
@@ -83,35 +82,35 @@ func GetDiscussionsListHandler(w http.ResponseWriter, r *http.Request) {
 		connections, ok := clients[nickname]
 		isOnline := ok && len(connections) > 0
 
-		var messageContentPtr *string
+		var messageContent string
 		if lastMessageContent.Valid {
-			messageContentPtr = &lastMessageContent.String
+			messageContent = lastMessageContent.String
+		} else {
+			messageContent = ""
 		}
 
-		var messageSentAtPtr *time.Time
+		var messageSentAt time.Time
 		if lastMessageSentAt.Valid {
-			messageSentAtPtr = &lastMessageSentAt.Time
+			messageSentAt = lastMessageSentAt.Time
 		}
 
 		userList = append(userList, UserStatus{
 			ID:                 id,
 			Nickname:           nickname,
 			IsOnline:           isOnline,
-			LastMessageContent: messageContentPtr,
-			LastMessageSentAt:  messageSentAtPtr,
+			LastMessageContent: messageContent,
+			LastMessageSentAt:  messageSentAt,
 		})
 	}
 
-	// Sort discussions by last message date (descending)
 	sort.Slice(userList, func(i, j int) bool {
-		// If one of them has nil date, push it to the end
-		if userList[i].LastMessageSentAt == nil {
+		if userList[i].LastMessageSentAt.IsZero() {
 			return false
 		}
-		if userList[j].LastMessageSentAt == nil {
+		if userList[j].LastMessageSentAt.IsZero() {
 			return true
 		}
-		return userList[i].LastMessageSentAt.After(*userList[j].LastMessageSentAt)
+		return userList[i].LastMessageSentAt.After(userList[j].LastMessageSentAt)
 	})
 
 	w.Header().Set("Content-Type", "application/json")
